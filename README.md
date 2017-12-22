@@ -1,6 +1,6 @@
-<center>
-![NetBarcode](https://i.imgur.com/C8cdJ7x.png)
-</center>
+<p align="center">
+    <img src="https://i.imgur.com/C8cdJ7x.png" alt="NetBarcode">
+</p>
 
 # NetBarcode
 
