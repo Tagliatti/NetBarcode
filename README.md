@@ -3,9 +3,11 @@
 </p>
 
 # NetBarcode
+
 Barcode generation library written in .NET Core compatible with .NET Standard 2.
 
 ### Supported barcodes:
+
 * CODE128
   * CODE128 (automatic mode switching)
   * CODE128 A/B/C
@@ -17,12 +19,14 @@ Barcode generation library written in .NET Core compatible with .NET Standard 2.
 * CODE93
 
 ### Install
+
 On Nuget:
 ```
 PM> Install-Package FixerIoCore
 ```
 
 ### Using
+
 ``` c#
 var barcode = new Barcode("543534"); // default: Code128
 ```
@@ -48,4 +52,5 @@ var value = barcode.GetBase64Image();
 ```
 
 ### License
+
 NetBarcode is shared under the MIT license. This means you can modify and use it however you want, even for comercial use. But please give this the Github repo a ⭐️.
