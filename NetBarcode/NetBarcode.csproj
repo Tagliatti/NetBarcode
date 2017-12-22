@@ -3,6 +3,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageProjectUrl>https://github.com/Tagliatti/NetBarcode</PackageProjectUrl>
     <PackageTags>barcode</PackageTags>
+    <PackageIconUrl>https://i.imgur.com/BhcO3DF.jpg</PackageIconUrl>
+    <PackageLicenseUrl>https://github.com/Tagliatti/NetBarcode/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/Tagliatti/NetBarcode</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Filipe Tagliatti</Authors>
+    <Company />
+    <Product />
+    <Description>Barcode generation library written in .NET Core compatible with .NET Standard 2.</Description>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Drawing.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
