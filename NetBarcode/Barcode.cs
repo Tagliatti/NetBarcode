@@ -38,7 +38,7 @@ namespace NetBarcode
     public class Barcode
     {
         private readonly string _data;
-        private readonly Type _type;
+        private readonly Type _type = Type.Code128;
         private string _encodedData;
         private readonly Color _foregroundColor = Color.Black;
         private readonly Color _backgroundColor = Color.White;
