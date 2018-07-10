@@ -22,7 +22,7 @@ Barcode generation library written in .NET Core compatible with .NET Standard 2.
 
 On Nuget:
 ```
-PM> Install-Package FixerIoCore
+PM> Install-Package NetBarcode
 ```
 
 ## Using
