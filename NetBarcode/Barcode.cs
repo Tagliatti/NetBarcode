@@ -1,10 +1,10 @@
-﻿using System;
+﻿using NetBarcode.Types;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
-using NetBarcode.Types;
 
 namespace NetBarcode
 {
@@ -46,53 +46,86 @@ namespace NetBarcode
         private int _height = 150;
         private readonly bool _autoSize = true;
         private readonly bool _showLabel = false;
-        private readonly Font _labelFont = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
+        private Font _labelFont = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
         private readonly LabelPosition _labelPosition = LabelPosition.BottomCenter;
         private readonly AlignmentPosition _alignmentPosition = AlignmentPosition.Center;
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode"/> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
         public Barcode(string data)
         {
             _data = data;
             _type = Type.Code128;
-            
+
             InitializeType();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="type">The type of barcode. Defaults to Code128</param>
         public Barcode(string data, Type type)
         {
             _data = data;
             _type = type;
-            
+
             InitializeType();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
         public Barcode(string data, bool showLabel)
         {
             _data = data;
             _showLabel = showLabel;
-            
+
             InitializeType();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="type">The type of barcode. Defaults to Code128</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
         public Barcode(string data, Type type, bool showLabel)
         {
             _data = data;
             _type = type;
             _showLabel = showLabel;
-            
+
             InitializeType();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="width">The width in pixels. Defaults to 300.</param>
+        /// <param name="height">The height in pixels. Defaults to 150.</param>
         public Barcode(string data, int width, int height)
         {
             _autoSize = false;
             _data = data;
             _width = width;
             _height = height;
-            
+
             InitializeType();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="width">The width in pixels. Defaults to 300.</param>
+        /// <param name="height">The height in pixels. Defaults to 150.</param>
         public Barcode(string data, bool showLabel, int width, int height)
         {
             _autoSize = false;
@@ -100,10 +133,18 @@ namespace NetBarcode
             _showLabel = showLabel;
             _width = width;
             _height = height;
-            
+
             InitializeType();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="width">The width in pixels. Defaults to 300.</param>
+        /// <param name="height">The height in pixels. Defaults to 150.</param>
+        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
         public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition)
         {
             _autoSize = false;
@@ -112,10 +153,19 @@ namespace NetBarcode
             _width = width;
             _height = height;
             _labelPosition = labelPosition;
-            
+
             InitializeType();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="width">The width in pixels. Defaults to 300.</param>
+        /// <param name="height">The height in pixels. Defaults to 150.</param>
+        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
+        /// <param name="alignmentPosition">The alignment position. Defaults to center.</param>
         public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition, AlignmentPosition alignmentPosition)
         {
             _autoSize = false;
@@ -125,10 +175,21 @@ namespace NetBarcode
             _height = height;
             _labelPosition = labelPosition;
             _alignmentPosition = alignmentPosition;
-            
+
             InitializeType();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="width">The width in pixels. Defaults to 300.</param>
+        /// <param name="height">The height in pixels. Defaults to 150.</param>
+        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
+        /// <param name="alignmentPosition">The alignment position. Defaults to center.</param>
+        /// <param name="backgroundColor">Color of the background. Defaults to white.</param>
+        /// <param name="foregroundColor">Color of the foreground. Defaults to black.</param>
         public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition, AlignmentPosition alignmentPosition, Color backgroundColor, Color foregroundColor)
         {
             _autoSize = false;
@@ -140,8 +201,29 @@ namespace NetBarcode
             _alignmentPosition = alignmentPosition;
             _backgroundColor = backgroundColor;
             _foregroundColor = foregroundColor;
-            
+
             InitializeType();
+        }
+
+        /// <summary>
+        /// Gets or sets the label font.
+        /// </summary>
+        /// <value>
+        /// The label font.
+        /// </value>
+        /// <exception cref="ArgumentNullException">LabelFont cannot be set to null.</exception>
+        public Font LabelFont
+        {
+            get
+            {
+                return _labelFont;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(LabelFont));
+                _labelFont = value;
+            }
         }
 
         private void InitializeType()
@@ -176,6 +258,11 @@ namespace NetBarcode
             _encodedData = barcode.GetEncoding();
         }
 
+        /// <summary>
+        /// Saves the image to a file.
+        /// </summary>
+        /// <param name="path">The file path for the image.</param>
+        /// <param name="imageFormat">The image format. Defaults to Jpeg.</param>
         public void SaveImageFile(string path, ImageFormat imageFormat = null)
         {
             var image = GenerateImage();
@@ -183,14 +270,47 @@ namespace NetBarcode
             image.Save(path, imageFormat ?? ImageFormat.Jpeg);
         }
 
+        /// <summary>
+        /// Gets the image in PNG format as a Base64 encoded string.
+        /// </summary>
         public string GetBase64Image()
         {
             var image = GenerateImage();
-            
+
             using (var memoryStream = new MemoryStream())
             {
                 image.Save(memoryStream, ImageFormat.Png);
                 return Convert.ToBase64String(memoryStream.ToArray());
+            }
+        }
+
+        /// <summary>
+        /// Gets the image in PNG format as a byte array.
+        /// </summary>
+        public byte[] GetByteArray()
+        {
+            var image = GenerateImage();
+
+            using (var memoryStream = new MemoryStream())
+            {
+                image.Save(memoryStream, ImageFormat.Png);
+                return memoryStream.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Gets the image as a byte array.
+        /// </summary>
+        /// <param name="imageFormat">The image format. Defaults to PNG.</param>
+        /// <returns></returns>
+        public byte[] GetByteArray(ImageFormat imageFormat)
+        {
+            var image = GenerateImage();
+
+            using (var memoryStream = new MemoryStream())
+            {
+                image.Save(memoryStream, imageFormat);
+                return memoryStream.ToArray();
             }
         }
 
@@ -202,7 +322,7 @@ namespace NetBarcode
             if (_autoSize)
             {
                 _width = barWidth * _encodedData.Length;
-    
+
                 _height = _width / aspectRatio;
             }
 
@@ -244,7 +364,7 @@ namespace NetBarcode
 
             //draw image
             var pos = 0;
-            var halfBarWidth = (int) (iBarWidth * 0.5);
+            var halfBarWidth = (int)(iBarWidth * 0.5);
 
             using (var graphics = Graphics.FromImage(bitmap))
             {
@@ -271,7 +391,7 @@ namespace NetBarcode
                 }
             }
 
-            var image = (Image) bitmap;
+            var image = (Image)bitmap;
 
             if (_showLabel)
             {
