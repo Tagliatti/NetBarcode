@@ -46,7 +46,7 @@ namespace NetBarcode
         private int _height = 150;
         private readonly bool _autoSize = true;
         private readonly bool _showLabel = false;
-        private Font _labelFont = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
+        private readonly Font _labelFont = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
         private readonly LabelPosition _labelPosition = LabelPosition.BottomCenter;
         private readonly AlignmentPosition _alignmentPosition = AlignmentPosition.Center;
 
@@ -87,6 +87,21 @@ namespace NetBarcode
 
             InitializeType();
         }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
+        public Barcode(string data, bool showLabel, Font labelFont)
+        {
+            _data = data;
+            _showLabel = showLabel;
+            _labelFont = labelFont;
+
+            InitializeType();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Barcode" /> class.
@@ -99,6 +114,23 @@ namespace NetBarcode
             _data = data;
             _type = type;
             _showLabel = showLabel;
+
+            InitializeType();
+        }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="type">The type of barcode. Defaults to Code128</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
+        public Barcode(string data, Type type, bool showLabel, Font labelFont)
+        {
+            _data = data;
+            _type = type;
+            _showLabel = showLabel;
+            _labelFont = labelFont;
 
             InitializeType();
         }
@@ -136,6 +168,26 @@ namespace NetBarcode
 
             InitializeType();
         }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="width">The width in pixels. Defaults to 300.</param>
+        /// <param name="height">The height in pixels. Defaults to 150.</param>
+        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
+        public Barcode(string data, bool showLabel, int width, int height, Font labelFont)
+        {
+            _autoSize = false;
+            _data = data;
+            _showLabel = showLabel;
+            _width = width;
+            _height = height;
+            _labelFont = labelFont;
+
+            InitializeType();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Barcode" /> class.
@@ -156,6 +208,28 @@ namespace NetBarcode
 
             InitializeType();
         }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="width">The width in pixels. Defaults to 300.</param>
+        /// <param name="height">The height in pixels. Defaults to 150.</param>
+        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
+        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
+        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition, Font labelFont)
+        {
+            _autoSize = false;
+            _data = data;
+            _showLabel = showLabel;
+            _width = width;
+            _height = height;
+            _labelPosition = labelPosition;
+            _labelFont = labelFont;
+
+            InitializeType();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Barcode" /> class.
@@ -166,7 +240,8 @@ namespace NetBarcode
         /// <param name="height">The height in pixels. Defaults to 150.</param>
         /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
         /// <param name="alignmentPosition">The alignment position. Defaults to center.</param>
-        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition, AlignmentPosition alignmentPosition)
+        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition,
+            AlignmentPosition alignmentPosition)
         {
             _autoSize = false;
             _data = data;
@@ -175,6 +250,31 @@ namespace NetBarcode
             _height = height;
             _labelPosition = labelPosition;
             _alignmentPosition = alignmentPosition;
+
+            InitializeType();
+        }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="width">The width in pixels. Defaults to 300.</param>
+        /// <param name="height">The height in pixels. Defaults to 150.</param>
+        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
+        /// <param name="alignmentPosition">The alignment position. Defaults to center.</param>
+        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
+        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition,
+            AlignmentPosition alignmentPosition, Font labelFont)
+        {
+            _autoSize = false;
+            _data = data;
+            _showLabel = showLabel;
+            _width = width;
+            _height = height;
+            _labelPosition = labelPosition;
+            _alignmentPosition = alignmentPosition;
+            _labelFont = labelFont;
 
             InitializeType();
         }
@@ -190,7 +290,8 @@ namespace NetBarcode
         /// <param name="alignmentPosition">The alignment position. Defaults to center.</param>
         /// <param name="backgroundColor">Color of the background. Defaults to white.</param>
         /// <param name="foregroundColor">Color of the foreground. Defaults to black.</param>
-        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition, AlignmentPosition alignmentPosition, Color backgroundColor, Color foregroundColor)
+        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition,
+            AlignmentPosition alignmentPosition, Color backgroundColor, Color foregroundColor)
         {
             _autoSize = false;
             _data = data;
@@ -206,24 +307,32 @@ namespace NetBarcode
         }
 
         /// <summary>
-        /// Gets or sets the label font.
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
         /// </summary>
-        /// <value>
-        /// The label font.
-        /// </value>
-        /// <exception cref="ArgumentNullException">LabelFont cannot be set to null.</exception>
-        public Font LabelFont
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="width">The width in pixels. Defaults to 300.</param>
+        /// <param name="height">The height in pixels. Defaults to 150.</param>
+        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
+        /// <param name="alignmentPosition">The alignment position. Defaults to center.</param>
+        /// <param name="backgroundColor">Color of the background. Defaults to white.</param>
+        /// <param name="foregroundColor">Color of the foreground. Defaults to black.</param>
+        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
+        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition,
+            AlignmentPosition alignmentPosition, Color backgroundColor, Color foregroundColor, Font labelFont)
         {
-            get
-            {
-                return _labelFont;
-            }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(nameof(LabelFont));
-                _labelFont = value;
-            }
+            _autoSize = false;
+            _data = data;
+            _showLabel = showLabel;
+            _width = width;
+            _height = height;
+            _labelPosition = labelPosition;
+            _alignmentPosition = alignmentPosition;
+            _backgroundColor = backgroundColor;
+            _foregroundColor = foregroundColor;
+            _labelFont = labelFont;
+
+            InitializeType();
         }
 
         private void InitializeType()
