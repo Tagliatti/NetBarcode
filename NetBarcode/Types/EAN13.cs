@@ -257,7 +257,7 @@ namespace NetBarcode.Types
         {
             try
             {
-                var rawDataHolder = _data.Substring(0, 12);
+                var rawDataHolder = data.Substring(0, 12);
 
                 var even = 0;
                 var odd = 0;
