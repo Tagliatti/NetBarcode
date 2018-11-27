@@ -12,10 +12,13 @@ namespace NetBarcode
     {
         Code11,
         Code128,
+        Code128A,
+        Code128B,
+        Code128C,
         Code39,
         Code93,
         EAN13,
-        EAN8
+        EAN8,
     }
 
     public enum LabelPosition
@@ -341,8 +344,17 @@ namespace NetBarcode
 
             switch (_type)
             {
-                case Type.Code128:
+                case Type.Code128: 
                     barcode = new Code128(_data);
+                    break;
+                case Type.Code128A: 
+                    barcode = new Code128(_data, Code128.Code128Type.A);
+                    break;
+                case Type.Code128B:
+                    barcode = new Code128(_data, Code128.Code128Type.B);
+                    break;
+                case Type.Code128C:
+                    barcode = new Code128(_data, Code128.Code128Type.C);
                     break;
                 case Type.Code11:
                     barcode = new Code11(_data);
