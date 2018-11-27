@@ -25,6 +25,11 @@ On Nuget:
 PM> Install-Package NetBarcode
 ```
 
+.NET CLI
+```
+> dotnet add package NetBarcode
+```
+
 ## Using
 
 ``` c#
