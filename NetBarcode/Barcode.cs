@@ -238,6 +238,48 @@ namespace NetBarcode
         /// Initializes a new instance of the <see cref="Barcode" /> class.
         /// </summary>
         /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="type">The type of barcode. Defaults to Code128</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="width">The width in pixels. Defaults to 300.</param>
+        /// <param name="height">The height in pixels. Defaults to 150.</param>
+        public Barcode(string data, Type type, bool showLabel, int width, int height)
+        {
+            _autoSize = false;
+            _data = data;
+            _type = type;
+            _showLabel = showLabel;
+            _width = width;
+            _height = height;
+
+            InitializeType();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="type">The type of barcode. Defaults to Code128</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="width">The width in pixels. Defaults to 300.</param>
+        /// <param name="height">The height in pixels. Defaults to 150.</param>
+        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
+        public Barcode(string data, Type type, bool showLabel, int width, int height, Font labelFont)
+        {
+            _autoSize = false;
+            _data = data;
+            _type = type;
+            _showLabel = showLabel;
+            _width = width;
+            _height = height;
+            _labelFont = labelFont;
+
+            InitializeType();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
         /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
         /// <param name="width">The width in pixels. Defaults to 300.</param>
         /// <param name="height">The height in pixels. Defaults to 150.</param>
