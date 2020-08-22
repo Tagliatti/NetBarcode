@@ -11,7 +11,7 @@
     <Company />
     <Product />
     <Description>Barcode generation library written in .NET Core compatible with .NET Standard 2.</Description>
-    <Version>1.0.8</Version>
+    <Version>1.1.0</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
     <DocumentationFile>bin\$(Configuration)\netstandard2.0\NetBarcode.xml</DocumentationFile>

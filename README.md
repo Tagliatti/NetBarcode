@@ -55,6 +55,10 @@ Get string with base64 image to use in HTML
 ``` c#
 var value = barcode.GetBase64Image();
 ```
+To manipulate the image
+``` c#
+var image = barcode.GetImage();
+```
 
 ## License
 

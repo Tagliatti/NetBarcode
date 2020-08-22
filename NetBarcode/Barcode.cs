@@ -380,6 +380,37 @@ namespace NetBarcode
             InitializeType();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Barcode" /> class.
+        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
+        /// <param name="type">The type of barcode. Defaults to Code128</param>
+        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
+        /// <param name="width">The width in pixels. Defaults to 300.</param>
+        /// <param name="height">The height in pixels. Defaults to 150.</param>
+        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
+        /// <param name="alignmentPosition">The alignment position. Defaults to center.</param>
+        /// <param name="backgroundColor">Color of the background. Defaults to white.</param>
+        /// <param name="foregroundColor">Color of the foreground. Defaults to black.</param>
+        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
+        public Barcode(string data, Type type, bool showLabel, int width, int height, LabelPosition labelPosition,
+            AlignmentPosition alignmentPosition, Color backgroundColor, Color foregroundColor, Font labelFont)
+        {
+            _autoSize = false;
+            _data = data;
+            _type = type;
+            _showLabel = showLabel;
+            _width = width;
+            _height = height;
+            _labelPosition = labelPosition;
+            _alignmentPosition = alignmentPosition;
+            _backgroundColor = backgroundColor;
+            _foregroundColor = foregroundColor;
+            _labelFont = labelFont;
+
+            InitializeType();
+        }
+
         private void InitializeType()
         {
             IBarcode barcode;
@@ -475,6 +506,17 @@ namespace NetBarcode
                 image.Save(memoryStream, imageFormat);
                 return memoryStream.ToArray();
             }
+        }
+
+        /// <summary>
+        /// Gets the image.
+        /// </summary>
+        /// <returns>
+        /// Image class
+        /// </returns>
+        public Image GetImage()
+        {
+            return GenerateImage();
         }
 
         private Image GenerateImage()
