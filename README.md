@@ -16,6 +16,7 @@ Barcode generation library written in .NET Core compatible with .NET Standard 2.
   * EAN-8
 * CODE11
 * CODE39
+* CODE39E
 * CODE93
 
 ## Install
