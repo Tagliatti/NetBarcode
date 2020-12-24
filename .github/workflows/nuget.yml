@@ -1,25 +1,25 @@
 name: Nuget Package Deploy
 
 on:
-    push:
-        branches:
-            - master
+  push:
+    branches:
+      - master
 jobs:
-    deploy:
-        runs-on: ubuntu-18.04
-        steps:
-            - uses: actions/checkout@v2
-            - name: Setup .NET Core
-              uses: actions/setup-dotnet@v1
-              with:
-                dotnet-version: 3.1.200
-            - name: Build
-              run: dotnet build -c Release
-            - name: Pack nuget package
-              run: dotnet pack --configuration Release
-            - name: Push package to nuget
-              run: dotnet nuget push **/*.nupkg 
-                        --skip-duplicate 
-                        --no-symbols true
-                        --api-key ${{ secrets.NUGET_DEPLOY_KEY }}
-                        --source https://api.nuget.org/v3/index.json
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.200
+      - name: Build
+        run: dotnet build -c Release
+      - name: Pack nuget package
+        run: dotnet pack --configuration Release
+      - name: Push package to nuget
+        run: dotnet nuget push **/*.nupkg 
+            --skip-duplicate 
+            --no-symbols true
+            --api-key ${{ secrets.NUGET_DEPLOY_KEY }}
+            --source https://api.nuget.org/v3/index.json

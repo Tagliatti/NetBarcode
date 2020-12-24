@@ -18,6 +18,7 @@ Barcode generation library written in .NET Core compatible with .NET Standard 2.
 * CODE39
 * CODE39E
 * CODE93
+* Codabar
 
 ## Install
 
@@ -70,4 +71,4 @@ var image = barcode.GetImage();
 
 ## License
 
-NetBarcode is shared under the MIT license. This means you can modify and use it however you want, even for comercial use. But please give this the Github repo a ⭐️.
+NetBarcode is shared under the MIT license. This means you can modify and use it however you want, even for comercial use. But please give this repository a ⭐️.
