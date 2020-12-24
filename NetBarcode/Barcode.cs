@@ -16,6 +16,7 @@ namespace NetBarcode
         Code128B,
         Code128C,
         Code39,
+        Code39E,
         Code93,
         EAN13,
         EAN8,
@@ -434,6 +435,9 @@ namespace NetBarcode
                     break;
                 case Type.Code39:
                     barcode = new Code39(_data);
+                    break;
+                case Type.Code39E:
+                    barcode = new Code39(_data, true);
                     break;
                 case Type.Code93:
                     barcode = new Code93(_data);
