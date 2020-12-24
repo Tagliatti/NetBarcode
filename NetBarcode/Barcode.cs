@@ -10,6 +10,7 @@ namespace NetBarcode
 {
     public enum Type
     {
+        Codabar,
         Code11,
         Code128,
         Code128A,
@@ -447,6 +448,9 @@ namespace NetBarcode
                     break;
                 case Type.EAN13:
                     barcode = new EAN13(_data);
+                    break;
+                case Type.Codabar:
+                    barcode = new Codabar(_data);
                     break;
                 default:
                     barcode = new Code128(_data);
