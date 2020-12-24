@@ -2,7 +2,7 @@
     <img src="https://i.imgur.com/C8cdJ7x.png" alt="NetBarcode">
 </p>
 
-# NetBarcode
+# NetBarcode ![Donwloads](https://img.shields.io/nuget/dt/NetBarcode)
 
 Barcode generation library written in .NET Core compatible with .NET Standard 2.
 
