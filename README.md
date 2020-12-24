@@ -31,6 +31,13 @@ PM> Install-Package NetBarcode
 > dotnet add package NetBarcode
 ```
 
+## Requirements
+This library uses `System.Drawing.Common` which requires the following installed packages:
+```
+sudo apt install libc6-dev 
+sudo apt install libgdiplus
+```
+
 ## Using
 
 ``` c#
