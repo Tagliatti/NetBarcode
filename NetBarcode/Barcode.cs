@@ -532,10 +532,13 @@ namespace NetBarcode
             const int barWidth = 2;
             const int aspectRatio = 2;
 
-            if (_autoSize)
+            if (_width == 0 || _autoSize)
             {
                 _width = barWidth * _encodedData.Length;
+            }
 
+            if (_autoSize)
+            {
                 _height = _width / aspectRatio;
             }
 
