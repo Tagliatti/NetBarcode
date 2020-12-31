@@ -2,8 +2,8 @@ name: Nuget Package Deploy
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - '*'
 jobs:
   deploy:
     runs-on: ubuntu-18.04
@@ -16,7 +16,7 @@ jobs:
       - name: Build
         run: dotnet build -c Release
       - name: Pack nuget package
-        run: dotnet pack --configuration Release
+        run: dotnet pack /p:PackageVersion=${GITHUB_REF:10} --configuration Release
       - name: Push package to nuget
         run: dotnet nuget push **/*.nupkg 
             --skip-duplicate 
