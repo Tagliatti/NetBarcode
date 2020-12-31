@@ -72,3 +72,10 @@ var image = barcode.GetImage();
 ## License
 
 NetBarcode is shared under the MIT license. This means you can modify and use it however you want, even for comercial use. But please give this repository a ⭐️.
+
+## Donate
+If you found it useful, please consider paying me a coffee.
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=D42N6KUH47YHW)
+
+![paypal](donate.png)
