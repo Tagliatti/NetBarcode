@@ -38,6 +38,11 @@ This library uses `System.Drawing.Common` which requires the following installed
 sudo apt install libc6-dev 
 sudo apt install libgdiplus
 ```
+Mac
+```
+brew update
+brew install mono-libgdiplus
+```
 
 ## Using
 
