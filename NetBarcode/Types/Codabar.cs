@@ -81,30 +81,30 @@ namespace NetBarcode.Types
         private void InitCodabar()
         {
             _codabarCode.Clear();
-            _codabarCode.Add('0', "101010011");//"101001101101");
-            _codabarCode.Add('1', "101011001");//"110100101011");
-            _codabarCode.Add('2', "101001011");//"101100101011");
-            _codabarCode.Add('3', "110010101");//"110110010101");
-            _codabarCode.Add('4', "101101001");//"101001101011");
-            _codabarCode.Add('5', "110101001");//"110100110101");
-            _codabarCode.Add('6', "100101011");//"101100110101");
-            _codabarCode.Add('7', "100101101");//"101001011011");
-            _codabarCode.Add('8', "100110101");//"110100101101");
-            _codabarCode.Add('9', "110100101");//"101100101101");
-            _codabarCode.Add('-', "101001101");//"110101001011");
-            _codabarCode.Add('$', "101100101");//"101101001011");
-            _codabarCode.Add(':', "1101011011");//"110110100101");
-            _codabarCode.Add('/', "1101101011");//"101011001011");
-            _codabarCode.Add('.', "1101101101");//"110101100101");
-            _codabarCode.Add('+', "101100110011");//"101101100101");
-            _codabarCode.Add('A', "1011001001");//"110110100101");
-            _codabarCode.Add('B', "1010010011");//"101011001011");
-            _codabarCode.Add('C', "1001001011");//"110101100101");
-            _codabarCode.Add('D', "1010011001");//"101101100101");
-            _codabarCode.Add('a', "1011001001");//"110110100101");
-            _codabarCode.Add('b', "1010010011");//"101011001011");
-            _codabarCode.Add('c', "1001001011");//"110101100101");
-            _codabarCode.Add('d', "1010011001");//"101101100101");
+            _codabarCode.Add('0', "101010011");
+            _codabarCode.Add('1', "101011001");
+            _codabarCode.Add('2', "101001011");
+            _codabarCode.Add('3', "110010101");
+            _codabarCode.Add('4', "101101001");
+            _codabarCode.Add('5', "110101001");
+            _codabarCode.Add('6', "100101011");
+            _codabarCode.Add('7', "100101101");
+            _codabarCode.Add('8', "100110101");
+            _codabarCode.Add('9', "110100101");
+            _codabarCode.Add('-', "101001101");
+            _codabarCode.Add('$', "101100101");
+            _codabarCode.Add(':', "1101011011");
+            _codabarCode.Add('/', "1101101011");
+            _codabarCode.Add('.', "1101101101");
+            _codabarCode.Add('+', "101100110011");
+            _codabarCode.Add('A', "1011001001");
+            _codabarCode.Add('B', "1001001011");
+            _codabarCode.Add('C', "1010010011");
+            _codabarCode.Add('D', "1010011001");
+            _codabarCode.Add('a', "1011001001");
+            _codabarCode.Add('b', "1001001011");
+            _codabarCode.Add('c', "1010010011");
+            _codabarCode.Add('d', "1010011001");
         }//init_Codeabar
     }//class
 }//namespace
