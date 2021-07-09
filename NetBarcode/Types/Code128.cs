@@ -317,7 +317,7 @@ namespace NetBarcode.Types
             {
                 var matchA = new Regex(@"^[\x00-\x5F\xC8-\xCF]*");
                 var matchB = new Regex(@"^[\x20-\x7F\xC8-\xCF]*");
-                var matchC = new Regex(@"^(\xCF*[0-9]{2}\xCF*)*");
+                var matchC = new Regex(@"^[0-9]*$");
 
                 if (matchC.Match(_data).Length >= 2)
                 {
