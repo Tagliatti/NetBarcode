@@ -3,7 +3,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageProjectUrl>https://github.com/Tagliatti/NetBarcode</PackageProjectUrl>
     <PackageTags>barcode</PackageTags>
-    <PackageIconUrl>https://imgur.com/a/pYvcGgI</PackageIconUrl>
+    <PackageIconUrl>https://i.imgur.com/w1ze2bi.gif</PackageIconUrl>
     <PackageLicenseUrl>https://github.com/Tagliatti/NetBarcode/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Tagliatti/NetBarcode</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
