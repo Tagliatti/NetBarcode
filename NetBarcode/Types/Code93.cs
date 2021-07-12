@@ -7,7 +7,7 @@ namespace NetBarcode.Types
     ///  Code 93 encoding
     ///  Written by: Brad Barnhill
     /// </summary>
-    internal class Code93 : Base, IBarcode
+    internal class Code93 : Base, IBarcodeBase
     {
         private readonly DataTable _codes = new DataTable("C93_Code");
         private readonly string _data;
@@ -19,6 +19,8 @@ namespace NetBarcode.Types
         public Code93(string data)
         {
             _data = data;
+            
+            Initialize();
         }
 
         /// <summary>
@@ -26,8 +28,6 @@ namespace NetBarcode.Types
         /// </summary>
         public string GetEncoding()
         {
-            Initialize();
-
             var formattedData = AddCheckDigits(_data);
 
             var encodedData = _codes.Select("Character = '*'")[0]["Encoding"].ToString();
@@ -36,7 +36,7 @@ namespace NetBarcode.Types
             {
                 try
                 {
-                    encodedData += _codes.Select("Character = '" + c.ToString() + "'")[0]["Encoding"].ToString();
+                    encodedData += _codes.Select("Character = '" + c + "'")[0]["Encoding"].ToString();
                 }
                 catch
                 {

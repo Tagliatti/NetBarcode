@@ -39,35 +39,174 @@ sudo apt install libc6-dev
 sudo apt install libgdiplus
 ```
 
-## Using
+## Usage/Examples
 
-``` c#
-var barcode = new Barcode("543534"); // default: Code128
+Set configs
+```c#
+var barcode = new Barcode();
+barcode.Configure(settings =>
+{
+    BackgroundColor = Color.Crimson
+});
+```
+or
+```c#
+var barcode = new Barcode();
+barcode.Configure(new BarcodeSettings
+{
+    BackgroundColor = Color.Crimson
+});
+```
+Use defaults
+```c#
+var barcode = new Barcode();
+barcode.SaveImageFile("12345456", "barcode.png");
 ```
 Change barcode type
-``` c#
-var barcode = new Barcode("543534", Type.Code93);
+```c#
+var barcode = new Barcode();
+barcode.Configure(settings =>
+{
+    settings.BarcodeType = BarcodeType.Code39E;
+}).SaveImageFile("12345456", "barcode.png");
 ```
-Show label
-``` c#
-var barcode = new Barcode("543534", Type.Code128, true);
+
+## Output options
+
+Image file `void SaveImageFile(string data, string path, ImageFormat imageFormat = null)`
+```c#
+var barcode = new Barcode();
+barcode.SaveImageFile("12345456", "barcode.png", ImageFormat.Jpeg);
 ```
-Saving in a image file
-``` c#
-var value = barcode.SaveImageFile("./path"); // default: ImageFormat.Jpeg
+Base64 image `string GetBase64Image(string data, ImageFormat imageFormat = null)`
+```c#
+var barcode = new Barcode();
+barcode.GetBase64Image("12345456", ImageFormat.Jpeg);
 ```
-Change image format
-``` c#
-var value = barcode.SaveImageFile("./path", ImageFormat.Png); // formats: Bmp, Gif, Jpeg, Png...
+Byte array image `byte[] GetByteArray(string data, ImageFormat imageFormat = null)`
+```c#
+var barcode = new Barcode();
+barcode.GetByteArray("12345456", ImageFormat.Jpeg);
 ```
-Get string with base64 image to use in HTML
-``` c#
-var value = barcode.GetBase64Image();
+Bitmap class `Bitmap GetImage(string data)`
+```c#
+var barcode = new Barcode();
+barcode.GetImage("12345456");
 ```
-To manipulate the image
-``` c#
-var image = barcode.GetImage();
+
+## Options
+| Option | Default value | Type |
+|--------|---------------|------|
+| [LineColor](#linecolor) | `Black` | `Color` |
+| [BackgroundColor](#backgroundcolor) | `White` | `Color` |
+| [BarWidth](#barwidth) | `2` | `int` |
+| [BarcodeHeight](#barcodeheight) | `150` | `int` |
+| [ShowLabel](#showlabel) | `true` | `bool` |
+| [LabelFont](#labelfont) | `Font(FontFamily.GenericMonospace, 10, FontStyle.Regular)` | `Font` |
+| [LabelPosition](#labelposition) | `BottomCenter` | `LabelPosition` |
+| [BarcodeType](#barcodetype) | `"auto" (CODE128)` | `BarcodeType` |
+| [Text](#text) |  | `string` |
+| [Rotate](#rotate) | `RotateNoneFlipNone` | `RotateFlipType` |
+
+### LineColor
+```c#
+var barcode = new Barcode();
+barcode.Configure(new BarcodeSettings
+{
+    LineColor = Color.Red
+});
 ```
+![LineColor](examples/LineColor.png)
+
+### BackgroundColor
+```c#
+var barcode = new Barcode();
+barcode.Configure(new BarcodeSettings
+{
+    BackgroundColor = Color.Red
+});
+```
+![BackgroundColor](examples/BackgroundColor.png)
+
+### BarWidth
+```c#
+var barcode = new Barcode();
+barcode.Configure(new BarcodeSettings
+{
+    BarWidth = 5
+});
+```
+![BarWidth](examples/BarWidth.png)
+
+### BarcodeHeight
+```c#
+var barcode = new Barcode();
+barcode.Configure(new BarcodeSettings
+{
+    BarcodeHeight = 250
+});
+```
+![BarcodeHeight](examples/BarcodeHeight.png)
+
+### ShowLabel
+```c#
+var barcode = new Barcode();
+barcode.Configure(new BarcodeSettings
+{
+    ShowLabel = false
+});
+```
+![ShowLabel](examples/ShowLabel.png)
+
+### LabelFont
+```c#
+var barcode = new Barcode();
+barcode.Configure(new BarcodeSettings
+{
+    LabelFont = new Font(FontFamily.GenericMonospace, 20, FontStyle.Italic)
+});
+```
+![LabelFont](examples/LabelFont.png)
+
+### LabelPosition
+```c#
+var barcode = new Barcode();
+barcode.Configure(new BarcodeSettings
+{
+    LabelPosition = LabelPosition.TopCenter
+});
+```
+![LabelPosition](examples/LabelPosition.png)
+
+### BarcodeType
+```c#
+var barcode = new Barcode();
+barcode.Configure(new BarcodeSettings
+{
+    BarcodeType = BarcodeType.Code39E
+});
+```
+![BarcodeType](examples/BarcodeType.png)
+
+### Text
+```c#
+var barcode = new Barcode();
+barcode.Configure(new BarcodeSettings
+{
+    Text = "New Text"
+});
+```
+![Text](examples/Text.png)
+
+### Rotate
+```c#
+var barcode = new Barcode();
+barcode.Configure(new BarcodeSettings
+{
+    Rotate = RotateFlipType.Rotate90FlipXY
+});
+```
+![Rotate](examples/Rotate.png)
 
 ## License
 

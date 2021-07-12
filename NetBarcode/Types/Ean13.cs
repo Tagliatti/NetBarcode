@@ -7,7 +7,7 @@ namespace NetBarcode.Types
     ///  EAN-13 encoding
     ///  Written by: Brad Barnhill
     /// </summary>
-    class EAN13 : Base, IBarcode
+    class Ean13 : Base, IBarcodeBase
     {
         private readonly string[] _codeA = { "0001101", "0011001", "0010011", "0111101", "0100011", "0110001", "0101111", "0111011", "0110111", "0001011" };
         private readonly string[] _codeB = { "0100111", "0110011", "0011011", "0100001", "0011101", "0111001", "0000101", "0010001", "0001001", "0010111" };
@@ -16,7 +16,7 @@ namespace NetBarcode.Types
         private readonly Hashtable _countryCodes = new Hashtable();
 	    private readonly string _data;
 
-	    public EAN13(string data)
+	    public Ean13(string data)
         {
             _data = CheckDigit(data);
         }

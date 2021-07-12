@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace NetBarcode.Types
 {
@@ -10,13 +11,12 @@ namespace NetBarcode.Types
     ///  Written by: Brad Barnhill
     ///  Refactored: Filipe Tagliatti
     /// </summary>
-    internal class Code128 : Base, IBarcode
+    internal class Code128 : Base, IBarcodeBase
     {
         public enum Code128Type { Auto, A, B, C };
         private readonly DataTable _codes = new DataTable("C128");
         private readonly List<string> _formattedData = new List<string>();
-        private readonly List<string> _encodedData = new List<string>();
-        private readonly Code128Type _code128Type = Code128Type.Auto;
+        private Code128Type _code128Type = Code128Type.Auto;
         private readonly string _data;
 
         /// <summary>
@@ -26,6 +26,9 @@ namespace NetBarcode.Types
         public Code128(string data)
         {
             _data = data;
+            
+            //initialize datastructure to hold encoding information
+            Initialize();
         }
 
         /// <summary>
@@ -37,14 +40,16 @@ namespace NetBarcode.Types
         {
             _code128Type = code128Type;
             _data = data;
+            
+            //initialize datastructure to hold encoding information
+            Initialize();
         }
 
         public string GetEncoding()
         {
-            //initialize datastructure to hold encoding information
-            Initialize();
-
-            return Encode();            
+            _formattedData.Clear();
+            
+            return Encode();
         }
         
         private void Initialize()
@@ -170,78 +175,6 @@ namespace NetBarcode.Types
             _codes.Rows.Add(new object[] { "", "STOP", "STOP", "STOP", "11000111010" });
         }
         
-        private List<DataRow> FindStartorCodeCharacter(string s, ref int col)
-        {
-            var rows = new List<DataRow>();
-            DataRow startCharacter = null;
-
-            //if two chars are numbers (or FNC1) then START_C or CODE_C
-            if (s.Length > 1 && (char.IsNumber(s[0]) || s[0] == Convert.ToChar(200)) && (char.IsNumber(s[1]) || s[1] == Convert.ToChar(200)))
-            {
-                if (startCharacter == null)
-                {
-                    startCharacter = _codes.Select("A = 'START_C'")[0];
-                    rows.Add(startCharacter);
-                }
-                else
-                {
-                    rows.Add(_codes.Select("A = 'CODE_C'")[0]);
-                }
-
-                col = 1;
-            }
-            else
-            {
-                var aFound = false;
-                var bFound = false;
-                foreach (DataRow row in _codes.Rows)
-                {
-                    try
-                    {
-                        if (!aFound && s == row["A"].ToString())
-                        {
-                            aFound = true;
-                            col = 2;
-
-                            if (startCharacter == null)
-                            {
-                                startCharacter = _codes.Select("A = 'START_A'")[0];
-                                rows.Add(startCharacter);
-                            }
-                            else
-                            {
-                                rows.Add(_codes.Select("B = 'CODE_A'")[0]);//first column is FNC4 so use B
-                            }
-                        }
-                        else if (!bFound && s == row["B"].ToString())
-                        {
-                            bFound = true;
-                            col = 1;
-
-                            if (startCharacter == null)
-                            {
-                                startCharacter = _codes.Select("A = 'START_B'")[0];
-                                rows.Add(startCharacter);
-                            }
-                            else
-                                rows.Add(_codes.Select("A = 'CODE_B'")[0]);
-                        }
-                        else if (aFound && bFound)
-                            break;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception("EC128-1: " + ex.Message);
-                    }
-                }                
-
-                if (rows.Count <= 0)
-                    throw new Exception("EC128-2: Could not determine start character.");
-            }
-
-            return rows;
-        }
-        
         private string CalculateCheckDigit()
         {
             var currentStartChar = _formattedData[0];
@@ -363,64 +296,35 @@ namespace NetBarcode.Types
             }
             else
             {
-                try
+                var matchA = new Regex(@"^[\x00-\x5F\xC8-\xCF]*");
+                var matchB = new Regex(@"^[\x20-\x7F\xC8-\xCF]*");
+                var matchC = new Regex(@"^[0-9]*$");
+
+                if (matchC.Match(_data).Length >= 2)
                 {
-                    for (var i = 0; i < (_formattedData.Count); i++)
-                    {
-                        var col = 0;
-                        var tempStartChars = FindStartorCodeCharacter(_formattedData[i], ref col);
-
-                        //check all the start characters and see if we need to stay with the same codeset or if a change of sets is required
-                        var sameCodeSet = false;
-                        foreach (var row in tempStartChars)
-                        {
-                            if (row["A"].ToString().EndsWith(currentCodeString) || row["B"].ToString().EndsWith(currentCodeString) || row["C"].ToString().EndsWith(currentCodeString))
-                            {
-                                sameCodeSet = true;
-                                break;
-                            }
-                        }
-
-                        if (currentCodeString == "" || !sameCodeSet)
-                        {
-                            currentCodeSet = tempStartChars[0];
-                            var error = true;
-                        
-                            while (error)
-                            {
-                                try
-                                {
-                                    currentCodeString = currentCodeSet[col].ToString().Split(new char[] { '_' })[1];
-                                    error = false;
-                                }
-                                catch 
-                                { 
-                                    error = true;
-
-                                    if (col++ > currentCodeSet.ItemArray.Length)
-                                        throw new Exception("No start character found in CurrentCodeSet.");
-                                }
-                            }
-                            
-                            _formattedData.Insert(i++, currentCodeSet[col].ToString());
-                        }
-                        
-                    }
+                    _formattedData.Insert(0, "START_C");
+                    _code128Type = Code128Type.C;
                 }
-                catch (Exception ex)
+                else if (matchA.Match(_data).Length >= matchB.Match(_data).Length)
                 {
-                    throw new Exception("EC128-3: Could not insert start and code characters.\n Message: " + ex.Message);
+                    _formattedData.Insert(0, "START_A");
+                    _code128Type = Code128Type.A;
+                }
+                else
+                {
+                    _formattedData.Insert(0, "START_B");
+                    _code128Type = Code128Type.B;
                 }
             }
         }
         
         private string Encode()
         {
-            //break up data for encoding
-            BreakUpDataForEncoding();
-
             //insert the start characters
             InsertStartandCodeCharacters();
+
+            //break up data for encoding
+            BreakUpDataForEncoding();
 
             var digit = CalculateCheckDigit();
 
@@ -459,20 +363,16 @@ namespace NetBarcode.Types
                     throw new Exception("EC128-5: Could not find encoding of a value( " + s1 + " ) in C128 type " + _code128Type);
 
                 encodedData += eRow[0]["Encoding"].ToString();
-                _encodedData.Add(eRow[0]["Encoding"].ToString());
             }
 
             //add the check digit
             encodedData += CalculateCheckDigit();
-            _encodedData.Add(CalculateCheckDigit());
 
             //add the stop character
             encodedData += _codes.Select("A = 'STOP'")[0]["Encoding"].ToString();
-            _encodedData.Add(_codes.Select("A = 'STOP'")[0]["Encoding"].ToString());
 
             //add the termination bars
             encodedData += "11";
-            _encodedData.Add("11");
 
             return encodedData;
         }

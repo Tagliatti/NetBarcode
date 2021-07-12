@@ -1,14 +1,14 @@
-﻿using NetBarcode.Types;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
+using NetBarcode.Types;
 
 namespace NetBarcode
 {
-    public enum Type
+    public enum BarcodeType
     {
         Codabar,
         Code11,
@@ -20,7 +20,7 @@ namespace NetBarcode
         Code39E,
         Code93,
         EAN13,
-        EAN8,
+        EAN8
     }
 
     public enum LabelPosition
@@ -31,575 +31,190 @@ namespace NetBarcode
         BottomLeft,
         BottomCenter,
         BottomRight
-    };
+    }
 
-    public enum AlignmentPosition
+    public class Barcode : IBarcode
     {
-        Center,
-        Left,
-        Right
-    };
+        private BarcodeSettings _barcodeSettings;
 
-    public class Barcode
-    {
-        private readonly string _data;
-        private readonly Type _type = Type.Code128;
-        private string _encodedData;
-        private readonly Color _foregroundColor = Color.Black;
-        private readonly Color _backgroundColor = Color.White;
-        private int _width = 300;
-        private int _height = 150;
-        private readonly bool _autoSize = true;
-        private readonly bool _showLabel = false;
-        private readonly Font _labelFont = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
-        private readonly LabelPosition _labelPosition = LabelPosition.BottomCenter;
-        private readonly AlignmentPosition _alignmentPosition = AlignmentPosition.Center;
+        public Barcode()
+        {
+            _barcodeSettings = new BarcodeSettings();
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode"/> class.
+        /// Set configs
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <returns></returns>
+        public Barcode Configure(Action<BarcodeSettings> settings)
+        {
+            settings(_barcodeSettings);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Set configs
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <returns></returns>
+        public Barcode Configure(BarcodeSettings settings)
+        {
+            _barcodeSettings = settings;
+
+            return this;
+        }
+
+        /// <summary>
+        ///     Saves the image to a file.
         /// </summary>
         /// <param name="data">The data to encode as a barcode.</param>
-        public Barcode(string data)
-        {
-            _data = data;
-            _type = Type.Code128;
-
-            InitializeType();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="type">The type of barcode. Defaults to Code128</param>
-        public Barcode(string data, Type type)
-        {
-            _data = data;
-            _type = type;
-
-            InitializeType();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        public Barcode(string data, bool showLabel)
-        {
-            _data = data;
-            _showLabel = showLabel;
-
-            InitializeType();
-        }
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
-        public Barcode(string data, bool showLabel, Font labelFont)
-        {
-            _data = data;
-            _showLabel = showLabel;
-            _labelFont = labelFont;
-
-            InitializeType();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="type">The type of barcode. Defaults to Code128</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        public Barcode(string data, Type type, bool showLabel)
-        {
-            _data = data;
-            _type = type;
-            _showLabel = showLabel;
-
-            InitializeType();
-        }
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="type">The type of barcode. Defaults to Code128</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
-        public Barcode(string data, Type type, bool showLabel, Font labelFont)
-        {
-            _data = data;
-            _type = type;
-            _showLabel = showLabel;
-            _labelFont = labelFont;
-
-            InitializeType();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="width">The width in pixels. Defaults to 300.</param>
-        /// <param name="height">The height in pixels. Defaults to 150.</param>
-        public Barcode(string data, int width, int height)
-        {
-            _autoSize = false;
-            _data = data;
-            _width = width;
-            _height = height;
-
-            InitializeType();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="width">The width in pixels. Defaults to 300.</param>
-        /// <param name="height">The height in pixels. Defaults to 150.</param>
-        public Barcode(string data, bool showLabel, int width, int height)
-        {
-            _autoSize = false;
-            _data = data;
-            _showLabel = showLabel;
-            _width = width;
-            _height = height;
-
-            InitializeType();
-        }
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="width">The width in pixels. Defaults to 300.</param>
-        /// <param name="height">The height in pixels. Defaults to 150.</param>
-        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
-        public Barcode(string data, bool showLabel, int width, int height, Font labelFont)
-        {
-            _autoSize = false;
-            _data = data;
-            _showLabel = showLabel;
-            _width = width;
-            _height = height;
-            _labelFont = labelFont;
-
-            InitializeType();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="width">The width in pixels. Defaults to 300.</param>
-        /// <param name="height">The height in pixels. Defaults to 150.</param>
-        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
-        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition)
-        {
-            _autoSize = false;
-            _data = data;
-            _showLabel = showLabel;
-            _width = width;
-            _height = height;
-            _labelPosition = labelPosition;
-
-            InitializeType();
-        }
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="width">The width in pixels. Defaults to 300.</param>
-        /// <param name="height">The height in pixels. Defaults to 150.</param>
-        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
-        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
-        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition, Font labelFont)
-        {
-            _autoSize = false;
-            _data = data;
-            _showLabel = showLabel;
-            _width = width;
-            _height = height;
-            _labelPosition = labelPosition;
-            _labelFont = labelFont;
-
-            InitializeType();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="type">The type of barcode. Defaults to Code128</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="width">The width in pixels. Defaults to 300.</param>
-        /// <param name="height">The height in pixels. Defaults to 150.</param>
-        public Barcode(string data, Type type, bool showLabel, int width, int height)
-        {
-            _autoSize = false;
-            _data = data;
-            _type = type;
-            _showLabel = showLabel;
-            _width = width;
-            _height = height;
-
-            InitializeType();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="type">The type of barcode. Defaults to Code128</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="width">The width in pixels. Defaults to 300.</param>
-        /// <param name="height">The height in pixels. Defaults to 150.</param>
-        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
-        public Barcode(string data, Type type, bool showLabel, int width, int height, Font labelFont)
-        {
-            _autoSize = false;
-            _data = data;
-            _type = type;
-            _showLabel = showLabel;
-            _width = width;
-            _height = height;
-            _labelFont = labelFont;
-
-            InitializeType();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="width">The width in pixels. Defaults to 300.</param>
-        /// <param name="height">The height in pixels. Defaults to 150.</param>
-        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
-        /// <param name="alignmentPosition">The alignment position. Defaults to center.</param>
-        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition,
-            AlignmentPosition alignmentPosition)
-        {
-            _autoSize = false;
-            _data = data;
-            _showLabel = showLabel;
-            _width = width;
-            _height = height;
-            _labelPosition = labelPosition;
-            _alignmentPosition = alignmentPosition;
-
-            InitializeType();
-        }
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="width">The width in pixels. Defaults to 300.</param>
-        /// <param name="height">The height in pixels. Defaults to 150.</param>
-        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
-        /// <param name="alignmentPosition">The alignment position. Defaults to center.</param>
-        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
-        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition,
-            AlignmentPosition alignmentPosition, Font labelFont)
-        {
-            _autoSize = false;
-            _data = data;
-            _showLabel = showLabel;
-            _width = width;
-            _height = height;
-            _labelPosition = labelPosition;
-            _alignmentPosition = alignmentPosition;
-            _labelFont = labelFont;
-
-            InitializeType();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="width">The width in pixels. Defaults to 300.</param>
-        /// <param name="height">The height in pixels. Defaults to 150.</param>
-        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
-        /// <param name="alignmentPosition">The alignment position. Defaults to center.</param>
-        /// <param name="backgroundColor">Color of the background. Defaults to white.</param>
-        /// <param name="foregroundColor">Color of the foreground. Defaults to black.</param>
-        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition,
-            AlignmentPosition alignmentPosition, Color backgroundColor, Color foregroundColor)
-        {
-            _autoSize = false;
-            _data = data;
-            _showLabel = showLabel;
-            _width = width;
-            _height = height;
-            _labelPosition = labelPosition;
-            _alignmentPosition = alignmentPosition;
-            _backgroundColor = backgroundColor;
-            _foregroundColor = foregroundColor;
-
-            InitializeType();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="width">The width in pixels. Defaults to 300.</param>
-        /// <param name="height">The height in pixels. Defaults to 150.</param>
-        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
-        /// <param name="alignmentPosition">The alignment position. Defaults to center.</param>
-        /// <param name="backgroundColor">Color of the background. Defaults to white.</param>
-        /// <param name="foregroundColor">Color of the foreground. Defaults to black.</param>
-        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
-        public Barcode(string data, bool showLabel, int width, int height, LabelPosition labelPosition,
-            AlignmentPosition alignmentPosition, Color backgroundColor, Color foregroundColor, Font labelFont)
-        {
-            _autoSize = false;
-            _data = data;
-            _showLabel = showLabel;
-            _width = width;
-            _height = height;
-            _labelPosition = labelPosition;
-            _alignmentPosition = alignmentPosition;
-            _backgroundColor = backgroundColor;
-            _foregroundColor = foregroundColor;
-            _labelFont = labelFont;
-
-            InitializeType();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Barcode" /> class.
-        /// </summary>
-        /// <param name="data">The data to encode as a barcode.</param>
-        /// <param name="type">The type of barcode. Defaults to Code128</param>
-        /// <param name="showLabel">if set to <c>true</c> show the data as a label. Defaults to false.</param>
-        /// <param name="width">The width in pixels. Defaults to 300.</param>
-        /// <param name="height">The height in pixels. Defaults to 150.</param>
-        /// <param name="labelPosition">The label position. Defaults to bottom-center.</param>
-        /// <param name="alignmentPosition">The alignment position. Defaults to center.</param>
-        /// <param name="backgroundColor">Color of the background. Defaults to white.</param>
-        /// <param name="foregroundColor">Color of the foreground. Defaults to black.</param>
-        /// <param name="labelFont">The label font. Defaults to Font("Microsoft Sans Serif", 10, FontStyle.Bold)</param>
-        public Barcode(string data, Type type, bool showLabel, int width, int height, LabelPosition labelPosition,
-            AlignmentPosition alignmentPosition, Color backgroundColor, Color foregroundColor, Font labelFont)
-        {
-            _autoSize = false;
-            _data = data;
-            _type = type;
-            _showLabel = showLabel;
-            _width = width;
-            _height = height;
-            _labelPosition = labelPosition;
-            _alignmentPosition = alignmentPosition;
-            _backgroundColor = backgroundColor;
-            _foregroundColor = foregroundColor;
-            _labelFont = labelFont;
-
-            InitializeType();
-        }
-
-        private void InitializeType()
-        {
-            IBarcode barcode;
-
-            switch (_type)
-            {
-                case Type.Code128: 
-                    barcode = new Code128(_data);
-                    break;
-                case Type.Code128A: 
-                    barcode = new Code128(_data, Code128.Code128Type.A);
-                    break;
-                case Type.Code128B:
-                    barcode = new Code128(_data, Code128.Code128Type.B);
-                    break;
-                case Type.Code128C:
-                    barcode = new Code128(_data, Code128.Code128Type.C);
-                    break;
-                case Type.Code11:
-                    barcode = new Code11(_data);
-                    break;
-                case Type.Code39:
-                    barcode = new Code39(_data);
-                    break;
-                case Type.Code39E:
-                    barcode = new Code39(_data, true);
-                    break;
-                case Type.Code93:
-                    barcode = new Code93(_data);
-                    break;
-                case Type.EAN8:
-                    barcode = new EAN8(_data);
-                    break;
-                case Type.EAN13:
-                    barcode = new EAN13(_data);
-                    break;
-                case Type.Codabar:
-                    barcode = new Codabar(_data);
-                    break;
-                default:
-                    barcode = new Code128(_data);
-                    break;
-            }
-
-            _encodedData = barcode.GetEncoding();
-        }
-
-        /// <summary>
-        /// Saves the image to a file.
-        /// </summary>
         /// <param name="path">The file path for the image.</param>
-        /// <param name="imageFormat">The image format. Defaults to Jpeg.</param>
-        public void SaveImageFile(string path, ImageFormat imageFormat = null)
+        /// <param name="imageFormat">The image format. Defaults to Png.</param>
+        public void SaveImageFile(string data, string path, ImageFormat imageFormat = null)
         {
-            var image = GenerateImage();
+            var encodedData = GetEncoding(data);
+            var image = GenerateImage(encodedData, _barcodeSettings.Text ?? data);
 
-            image.Save(path, imageFormat ?? ImageFormat.Jpeg);
+            image.Save(path, imageFormat ?? ImageFormat.Png);
         }
 
         /// <summary>
-        /// Gets the image in PNG format as a Base64 encoded string.
+        ///     Gets the image as a Base64 encoded string.
+        /// <param name="data">The data to encode as a barcode.</param>
+        ///     <param name="imageFormat">The image format. Defaults to Png.</param>
         /// </summary>
-        public string GetBase64Image()
+        public string GetBase64Image(string data, ImageFormat imageFormat = null)
         {
-            var image = GenerateImage();
+            var encodedData = GetEncoding(data);
+            var image = GenerateImage(encodedData, _barcodeSettings.Text ?? data);
 
             using (var memoryStream = new MemoryStream())
             {
-                image.Save(memoryStream, ImageFormat.Png);
+                image.Save(memoryStream, imageFormat ?? ImageFormat.Png);
                 return Convert.ToBase64String(memoryStream.ToArray());
             }
         }
 
         /// <summary>
-        /// Gets the image in PNG format as a byte array.
+        ///     Gets the image as a byte array.
         /// </summary>
-        public byte[] GetByteArray()
-        {
-            var image = GenerateImage();
-
-            using (var memoryStream = new MemoryStream())
-            {
-                image.Save(memoryStream, ImageFormat.Png);
-                return memoryStream.ToArray();
-            }
-        }
-
-        /// <summary>
-        /// Gets the image as a byte array.
-        /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
         /// <param name="imageFormat">The image format. Defaults to PNG.</param>
         /// <returns></returns>
-        public byte[] GetByteArray(ImageFormat imageFormat)
+        public byte[] GetByteArray(string data, ImageFormat imageFormat = null)
         {
-            var image = GenerateImage();
+            var encodedData = GetEncoding(data);
+            var image = GenerateImage(encodedData, _barcodeSettings.Text ?? data);
 
             using (var memoryStream = new MemoryStream())
             {
-                image.Save(memoryStream, imageFormat);
+                image.Save(memoryStream, imageFormat ?? ImageFormat.Png);
                 return memoryStream.ToArray();
             }
         }
 
         /// <summary>
-        /// Gets the image.
+        ///     Gets the image.
         /// </summary>
+        /// <param name="data">The data to encode as a barcode.</param>
         /// <returns>
-        /// Image class
+        ///     Image class
         /// </returns>
-        public Image GetImage()
+        public Bitmap GetImage(string data)
         {
-            return GenerateImage();
+            var encodedData = GetEncoding(data);
+            return GenerateImage(encodedData, _barcodeSettings.Text ?? data);
         }
 
-        private Image GenerateImage()
+        private string GetEncoding(string data)
         {
-            const int barWidth = 2;
-            const int aspectRatio = 2;
+            IBarcodeBase barcode;
 
-            if (_width == 0 || _autoSize)
+            switch (_barcodeSettings.BarcodeType)
             {
-                _width = barWidth * _encodedData.Length;
-            }
-
-            if (_autoSize)
-            {
-                _height = _width / aspectRatio;
-            }
-
-            var topLabelAdjustment = 0;
-
-            if (_showLabel)
-            {
-                // Shift drawing down if top label.
-                if ((_labelPosition & (LabelPosition.TopCenter | LabelPosition.TopLeft | LabelPosition.TopRight)) > 0)
-                    topLabelAdjustment = _labelFont.Height;
-
-                _height -= _labelFont.Height;
-            }
-
-            var bitmap = new Bitmap(_width, _height);
-            var iBarWidth = _width / _encodedData.Length;
-            var shiftAdjustment = 0;
-            var iBarWidthModifier = 1;
-
-            switch (_alignmentPosition)
-            {
-                case AlignmentPosition.Center:
-                    shiftAdjustment = (_width % _encodedData.Length) / 2;
+                case BarcodeType.Code128:
+                    barcode = new Code128(data);
                     break;
-                case AlignmentPosition.Left:
-                    shiftAdjustment = 0;
+                case BarcodeType.Code128A:
+                    barcode = new Code128(data, Code128.Code128Type.A);
                     break;
-                case AlignmentPosition.Right:
-                    shiftAdjustment = (_width % _encodedData.Length);
+                case BarcodeType.Code128B:
+                    barcode = new Code128(data, Code128.Code128Type.B);
+                    break;
+                case BarcodeType.Code128C:
+                    barcode = new Code128(data, Code128.Code128Type.C);
+                    break;
+                case BarcodeType.Code11:
+                    barcode = new Code11(data);
+                    break;
+                case BarcodeType.Code39:
+                    barcode = new Code39(data);
+                    break;
+                case BarcodeType.Code39E:
+                    barcode = new Code39(data, true);
+                    break;
+                case BarcodeType.Code93:
+                    barcode = new Code93(data);
+                    break;
+                case BarcodeType.EAN8:
+                    barcode = new Ean8(data);
+                    break;
+                case BarcodeType.EAN13:
+                    barcode = new Ean13(data);
+                    break;
+                case BarcodeType.Codabar:
+                    barcode = new Codabar(data);
                     break;
                 default:
-                    shiftAdjustment = (_width % _encodedData.Length) / 2;
+                    barcode = new Code128(data);
                     break;
             }
 
-            if (iBarWidth <= 0)
+            return barcode.GetEncoding();
+        }
+
+        private Bitmap GenerateImage(string encodedData, string data)
+        {
+            var width = _barcodeSettings.BarWidth * encodedData.Length;
+            var topLabelAdjustment = 0;
+
+            // Shift drawing down if top label.
+            if (_barcodeSettings.ShowLabel && (_barcodeSettings.LabelPosition &
+                                               (LabelPosition.TopCenter | LabelPosition.TopLeft |
+                                                LabelPosition.TopRight)) > 0)
+                topLabelAdjustment = _barcodeSettings.LabelFont.Height;
+
+            var bitmap = new Bitmap(width, _barcodeSettings.BarcodeHeight + (_barcodeSettings.ShowLabel ? _barcodeSettings.LabelFont.Height : 0));
+            var shiftAdjustment = 0;
+
+            if (_barcodeSettings.BarWidth <= 0)
                 throw new Exception(
                     "EGENERATE_IMAGE-2: Image size specified not large enough to draw image. (Bar size determined to be less than 1 pixel)");
 
             //draw image
             var pos = 0;
-            var halfBarWidth = (int)(iBarWidth * 0.5);
+            var halfBarWidth = (int) (_barcodeSettings.BarWidth * 0.5);
 
             using (var graphics = Graphics.FromImage(bitmap))
             {
                 //clears the image and colors the entire background
-                graphics.Clear(_backgroundColor);
+                graphics.Clear(_barcodeSettings.BackgroundColor);
 
                 //lines are fBarWidth wide so draw the appropriate color line vertically
-                using (var backpen = new Pen(_backgroundColor, iBarWidth / iBarWidthModifier))
+                using (var backpen = new Pen(_barcodeSettings.BackgroundColor, _barcodeSettings.BarWidth))
                 {
-                    using (var pen = new Pen(_foregroundColor, iBarWidth / iBarWidthModifier))
+                    using (var pen = new Pen(_barcodeSettings.LineColor, _barcodeSettings.BarWidth))
                     {
-                        while (pos < _encodedData.Length)
+                        while (pos < encodedData.Length)
                         {
-                            if (_encodedData[pos] == '1')
+                            if (encodedData[pos] == '1')
                             {
                                 graphics.DrawLine(pen,
-                                    new Point(pos * iBarWidth + shiftAdjustment + halfBarWidth, topLabelAdjustment),
-                                    new Point(pos * iBarWidth + shiftAdjustment + halfBarWidth,
-                                        _height + topLabelAdjustment));
+                                    new Point(pos * _barcodeSettings.BarWidth + shiftAdjustment + halfBarWidth, topLabelAdjustment),
+                                    new Point(pos * _barcodeSettings.BarWidth + shiftAdjustment + halfBarWidth,
+                                        _barcodeSettings.BarcodeHeight + topLabelAdjustment));
                             }
                             pos++;
                         }
@@ -607,28 +222,29 @@ namespace NetBarcode
                 }
             }
 
-            var image = (Image)bitmap;
-
-            if (_showLabel)
+            if (_barcodeSettings.ShowLabel)
             {
-                image = InsertLabel(image);
+                bitmap = InsertLabel(bitmap, data);
             }
-            return image;
+            
+            bitmap.RotateFlip(_barcodeSettings.Rotate);
+
+            return bitmap;
         }
 
-        private Image InsertLabel(Image image)
+        private Bitmap InsertLabel(Bitmap image, string data)
         {
             try
             {
-                using (var g = Graphics.FromImage(image))
+                using (var graphics = Graphics.FromImage(image))
                 {
-                    g.DrawImage(image, 0, 0);
+                    graphics.DrawImage(image, 0, 0);
 
-                    g.SmoothingMode = SmoothingMode.HighQuality;
-                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    g.CompositingQuality = CompositingQuality.HighQuality;
-                    g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                    graphics.SmoothingMode = SmoothingMode.HighQuality;
+                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    graphics.CompositingQuality = CompositingQuality.HighQuality;
+                    graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
                     var stringFormat = new StringFormat
                     {
@@ -638,18 +254,18 @@ namespace NetBarcode
 
                     var labelY = 0;
 
-                    switch (_labelPosition)
+                    switch (_barcodeSettings.LabelPosition)
                     {
                         case LabelPosition.BottomCenter:
-                            labelY = image.Height - (_labelFont.Height);
+                            labelY = image.Height - _barcodeSettings.LabelFont.Height;
                             stringFormat.Alignment = StringAlignment.Center;
                             break;
                         case LabelPosition.BottomLeft:
-                            labelY = image.Height - (_labelFont.Height);
+                            labelY = image.Height - _barcodeSettings.LabelFont.Height;
                             stringFormat.Alignment = StringAlignment.Near;
                             break;
                         case LabelPosition.BottomRight:
-                            labelY = image.Height - (_labelFont.Height);
+                            labelY = image.Height - _barcodeSettings.LabelFont.Height;
                             stringFormat.Alignment = StringAlignment.Far;
                             break;
                         case LabelPosition.TopCenter:
@@ -667,15 +283,16 @@ namespace NetBarcode
                     }
 
                     //color a background color box at the bottom of the barcode to hold the string of data
-                    g.FillRectangle(new SolidBrush(_backgroundColor),
-                        new RectangleF(0, labelY, image.Width, _labelFont.Height));
+                    graphics.FillRectangle(new SolidBrush(_barcodeSettings.BackgroundColor),
+                        new RectangleF(0, labelY, image.Width, _barcodeSettings.LabelFont.Height));
 
                     //draw datastring under the barcode image
-                    g.DrawString(_data, _labelFont, new SolidBrush(_foregroundColor),
-                        new RectangleF(0, labelY, image.Width, _labelFont.Height), stringFormat);
+                    graphics.DrawString(data, _barcodeSettings.LabelFont, new SolidBrush(_barcodeSettings.LineColor),
+                        new RectangleF(0, labelY, image.Width, _barcodeSettings.LabelFont.Height), stringFormat);
 
-                    g.Save();
+                    graphics.Save();
                 }
+
                 return image;
             }
             catch (Exception ex)

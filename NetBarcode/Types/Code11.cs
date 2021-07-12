@@ -7,7 +7,7 @@ namespace NetBarcode.Types
     ///  Written by: Brad Barnhill
     ///  Refactored: Filipe Tagliatti
     /// </summary>
-    internal class Code11 : Base, IBarcode
+    internal class Code11 : Base, IBarcodeBase
     {
         private readonly string _data;
 

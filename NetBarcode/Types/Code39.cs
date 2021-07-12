@@ -8,7 +8,7 @@ namespace NetBarcode.Types
     ///  Written by: Brad Barnhill
     ///  Refactored: Filipe Tagliatti
     /// </summary>
-    internal class Code39 : Base, IBarcode
+    internal class Code39 : Base, IBarcodeBase
     {
         private readonly Hashtable _codes = new Hashtable();
         private readonly Hashtable _codesExtended = new Hashtable();
@@ -23,6 +23,8 @@ namespace NetBarcode.Types
         public Code39(string data)
         {
             _data = data;
+            
+            Initialize();
         }
 
         /// <summary>
@@ -34,6 +36,12 @@ namespace NetBarcode.Types
         {
             _data = data;
             _extended = extended;
+            
+            Initialize();
+            if (_extended)
+            {
+                InitializeExtended();
+            }
         }
 
         /// <summary>
@@ -47,6 +55,12 @@ namespace NetBarcode.Types
             _data = data;
             _extended = extended;
             _enableChecksum = enableChecksum;
+            
+            Initialize();
+            if (_extended)
+            {
+                InitializeExtended();
+            }
         }
 
         /// <summary>
@@ -54,14 +68,11 @@ namespace NetBarcode.Types
         /// </summary>
         public string GetEncoding()
         {
-            Initialize();
-
             var strNoAstr = _data.Replace("*", "");
             var formattedData = "*" + strNoAstr + (_enableChecksum ? GetChecksumChar(strNoAstr).ToString() : String.Empty) + "*";
 
             if (_extended)
             {
-                InitializeExtended();
                 InsertExtendedCharsIfNeeded(ref formattedData);
             }
 
