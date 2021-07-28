@@ -2,7 +2,7 @@
     <img src="https://i.imgur.com/C8cdJ7x.png" alt="NetBarcode">
 </p>
 
-# NetBarcode ![Donwloads](https://img.shields.io/nuget/dt/NetBarcode)
+# NetBarcode ![nuget](https://img.shields.io/nuget/v/NetBarcode) ![Donwloads](https://img.shields.io/nuget/dt/NetBarcode)
 
 Barcode generation library written in .NET Core compatible with .NET Standard 2.
 
@@ -31,6 +31,9 @@ PM> Install-Package NetBarcode
 ```
 > dotnet add package NetBarcode
 ```
+
+## NuGet
+https://www.nuget.org/packages/NetBarcode
 
 ## Requirements
 This library uses `System.Drawing.Common` which requires the following installed packages:
