@@ -467,8 +467,7 @@ namespace NetBarcode
         /// <param name="imageFormat">The image format. Defaults to Jpeg.</param>
         public void SaveImageFile(string path, ImageFormat imageFormat = null)
         {
-            var image = GenerateImage();
-
+            using (var image = GenerateImage())
             image.Save(path, imageFormat ?? ImageFormat.Jpeg);
         }
 
@@ -477,8 +476,7 @@ namespace NetBarcode
         /// </summary>
         public string GetBase64Image()
         {
-            var image = GenerateImage();
-
+            using (var image = GenerateImage())
             using (var memoryStream = new MemoryStream())
             {
                 image.Save(memoryStream, ImageFormat.Png);
@@ -491,13 +489,12 @@ namespace NetBarcode
         /// </summary>
         public byte[] GetByteArray()
         {
-            var image = GenerateImage();
-
+            using (var image = GenerateImage())
             using (var memoryStream = new MemoryStream())
             {
                 image.Save(memoryStream, ImageFormat.Png);
                 return memoryStream.ToArray();
-            }
+            }            
         }
 
         /// <summary>
@@ -507,8 +504,7 @@ namespace NetBarcode
         /// <returns></returns>
         public byte[] GetByteArray(ImageFormat imageFormat)
         {
-            var image = GenerateImage();
-
+            using (var image = GenerateImage())
             using (var memoryStream = new MemoryStream())
             {
                 image.Save(memoryStream, imageFormat);
