@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace NetBarcode
 {
@@ -549,7 +550,12 @@ namespace NetBarcode
                 _height -= _labelFont.Height;
             }
 
-            var bitmap = new Bitmap(_width, _height);
+            var pixelFormat = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                ? PixelFormat.Format24bppRgb
+                : PixelFormat.Format32bppArgb;
+
+            var bitmap = new Bitmap(_width, _height, pixelFormat);
+
             var iBarWidth = _width / _encodedData.Length;
             var shiftAdjustment = 0;
             var iBarWidthModifier = 1;
