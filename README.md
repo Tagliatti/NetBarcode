@@ -77,6 +77,10 @@ To manipulate the image
 var image = barcode.GetImage();
 ```
 
+## Version 1.5
+ImageSharp was added in place of System.Drawing due to break of support from .NET 6, more information [click here](https://docs.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only).
+There is a small compatibility break only if you are manipulating the image with the GetImage method or customizing font and color. In these cases the namespaces have changed to `SixLabors.ImageSharp`.
+
 ## License
 
 NetBarcode is shared under the MIT license. This means you can modify and use it however you want, even for comercial use. But please give this repository a ⭐️.

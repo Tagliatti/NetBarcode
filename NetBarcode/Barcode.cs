@@ -1,11 +1,21 @@
 ﻿using NetBarcode.Types;
 using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Drawing.Text;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Linq;
+using SixLabors.Fonts;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Bmp;
+using SixLabors.ImageSharp.Formats.Gif;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Pbm;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Formats.Tga;
+using SixLabors.ImageSharp.Formats.Tiff;
+using SixLabors.ImageSharp.Formats.Webp;
 
 namespace NetBarcode
 {
@@ -32,14 +42,26 @@ namespace NetBarcode
         BottomLeft,
         BottomCenter,
         BottomRight
-    };
+    }
 
     public enum AlignmentPosition
     {
         Center,
         Left,
         Right
-    };
+    }
+
+    public enum ImageFormat
+    {
+        Bmp,
+        Gif,
+        Jpeg,
+        Pbm,
+        Png,
+        Tga,
+        Tiff,
+        Webp,
+    }
 
     public class Barcode
     {
@@ -52,7 +74,11 @@ namespace NetBarcode
         private int _height = 150;
         private readonly bool _autoSize = true;
         private readonly bool _showLabel = false;
-        private readonly Font _labelFont = new Font("Microsoft Sans Serif", 10, FontStyle.Bold);
+
+        private readonly Font _labelFont =
+            SystemFonts.CreateFont(SystemFonts.Collection.Families.First().Name, 10, FontStyle.Bold);
+
+        private readonly FontCollection _fontCollection = new FontCollection();
         private readonly LabelPosition _labelPosition = LabelPosition.BottomCenter;
         private readonly AlignmentPosition _alignmentPosition = AlignmentPosition.Center;
 
@@ -93,7 +119,7 @@ namespace NetBarcode
 
             InitializeType();
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Barcode" /> class.
         /// </summary>
@@ -123,7 +149,7 @@ namespace NetBarcode
 
             InitializeType();
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Barcode" /> class.
         /// </summary>
@@ -174,7 +200,7 @@ namespace NetBarcode
 
             InitializeType();
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Barcode" /> class.
         /// </summary>
@@ -214,7 +240,7 @@ namespace NetBarcode
 
             InitializeType();
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Barcode" /> class.
         /// </summary>
@@ -301,7 +327,7 @@ namespace NetBarcode
 
             InitializeType();
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Barcode" /> class.
         /// </summary>
@@ -420,10 +446,10 @@ namespace NetBarcode
 
             switch (_type)
             {
-                case Type.Code128: 
+                case Type.Code128:
                     barcode = new Code128(_data);
                     break;
-                case Type.Code128A: 
+                case Type.Code128A:
                     barcode = new Code128(_data, Code128.Code128Type.A);
                     break;
                 case Type.Code128B:
@@ -466,10 +492,10 @@ namespace NetBarcode
         /// </summary>
         /// <param name="path">The file path for the image.</param>
         /// <param name="imageFormat">The image format. Defaults to Jpeg.</param>
-        public void SaveImageFile(string path, ImageFormat imageFormat = null)
+        public void SaveImageFile(string path, ImageFormat imageFormat = ImageFormat.Jpeg)
         {
             using (var image = GenerateImage())
-            image.Save(path, imageFormat ?? ImageFormat.Jpeg);
+                image.Save(path, getImageEncoder(imageFormat));
         }
 
         /// <summary>
@@ -480,7 +506,7 @@ namespace NetBarcode
             using (var image = GenerateImage())
             using (var memoryStream = new MemoryStream())
             {
-                image.Save(memoryStream, ImageFormat.Png);
+                image.Save(memoryStream, getImageEncoder(ImageFormat.Png));
                 return Convert.ToBase64String(memoryStream.ToArray());
             }
         }
@@ -493,9 +519,9 @@ namespace NetBarcode
             using (var image = GenerateImage())
             using (var memoryStream = new MemoryStream())
             {
-                image.Save(memoryStream, ImageFormat.Png);
+                image.Save(memoryStream, getImageEncoder(ImageFormat.Png));
                 return memoryStream.ToArray();
-            }            
+            }
         }
 
         /// <summary>
@@ -508,9 +534,54 @@ namespace NetBarcode
             using (var image = GenerateImage())
             using (var memoryStream = new MemoryStream())
             {
-                image.Save(memoryStream, imageFormat);
+                image.Save(memoryStream, getImageEncoder(imageFormat));
                 return memoryStream.ToArray();
             }
+        }
+
+        private IImageEncoder getImageEncoder(ImageFormat imageFormat)
+        {
+            if (imageFormat == ImageFormat.Bmp)
+            {
+                return new BmpEncoder();
+            }
+
+            if (imageFormat == ImageFormat.Gif)
+            {
+                return new GifEncoder();
+            }
+
+            if (imageFormat == ImageFormat.Jpeg)
+            {
+                return new JpegEncoder();
+            }
+
+            if (imageFormat == ImageFormat.Pbm)
+            {
+                return new PbmEncoder();
+            }
+
+            if (imageFormat == ImageFormat.Png)
+            {
+                return new PngEncoder();
+            }
+
+            if (imageFormat == ImageFormat.Tga)
+            {
+                return new TgaEncoder();
+            }
+
+            if (imageFormat == ImageFormat.Tiff)
+            {
+                return new TiffEncoder();
+            }
+
+            if (imageFormat == ImageFormat.Webp)
+            {
+                return new WebpEncoder();
+            }
+
+            throw new ArgumentException();
         }
 
         /// <summary>
@@ -539,22 +610,18 @@ namespace NetBarcode
                 _height = _width / aspectRatio;
             }
 
-            var topLabelAdjustment = 0;
+            var topLabelAdjustment = 0F;
+            
+            var textOptions = new TextOptions(_labelFont)
+            {
+                Dpi = 200,
+            };
+            var labelSize = TextMeasurer.Measure(_data, textOptions);
 
             if (_showLabel)
             {
-                // Shift drawing down if top label.
-                if ((_labelPosition & (LabelPosition.TopCenter | LabelPosition.TopLeft | LabelPosition.TopRight)) > 0)
-                    topLabelAdjustment = _labelFont.Height;
-
-                _height -= _labelFont.Height;
+                topLabelAdjustment = labelSize.Height;
             }
-
-            var pixelFormat = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
-                ? PixelFormat.Format24bppRgb
-                : PixelFormat.Format32bppArgb;
-
-            var bitmap = new Bitmap(_width, _height, pixelFormat);
 
             var iBarWidth = _width / _encodedData.Length;
             var shiftAdjustment = 0;
@@ -584,106 +651,70 @@ namespace NetBarcode
             var pos = 0;
             var halfBarWidth = (int)(iBarWidth * 0.5);
 
-            using (var graphics = Graphics.FromImage(bitmap))
+            var image = new Image<Rgba32>(_width, _height);
+            image.Mutate(imageContext =>
             {
                 //clears the image and colors the entire background
-                graphics.Clear(_backgroundColor);
+                imageContext.BackgroundColor(_backgroundColor);
 
                 //lines are fBarWidth wide so draw the appropriate color line vertically
-                using (var backpen = new Pen(_backgroundColor, iBarWidth / iBarWidthModifier))
+                var pen = new Pen(_foregroundColor, iBarWidth / iBarWidthModifier);
+                var drawingOptions = new DrawingOptions
                 {
-                    using (var pen = new Pen(_foregroundColor, iBarWidth / iBarWidthModifier))
+                    GraphicsOptions = new GraphicsOptions
                     {
-                        while (pos < _encodedData.Length)
-                        {
-                            if (_encodedData[pos] == '1')
-                            {
-                                graphics.DrawLine(pen,
-                                    new Point(pos * iBarWidth + shiftAdjustment + halfBarWidth, topLabelAdjustment),
-                                    new Point(pos * iBarWidth + shiftAdjustment + halfBarWidth,
-                                        _height + topLabelAdjustment));
-                            }
-                            pos++;
-                        }
+                        Antialias = true,
+                        AlphaCompositionMode = PixelAlphaCompositionMode.Src,
                     }
-                }
-            }
+                };
 
-            var image = (Image)bitmap;
+                while (pos < _encodedData.Length)
+                {
+                    if (_encodedData[pos] == '1')
+                    {
+                        imageContext.DrawLines(drawingOptions, pen,
+                            new PointF(pos * iBarWidth + shiftAdjustment + halfBarWidth, 0),
+                            new PointF(pos * iBarWidth + shiftAdjustment + halfBarWidth, _height - topLabelAdjustment)
+                        );
+                    }
+
+                    pos++;
+                }
+            });
 
             if (_showLabel)
             {
-                image = InsertLabel(image);
-            }
-            return image;
-        }
-
-        private Image InsertLabel(Image image)
-        {
-            try
-            {
-                using (var g = Graphics.FromImage(image))
+                var labelY = 0;
+                var labelX = 0;
+                
+                switch (_labelPosition)
                 {
-                    g.DrawImage(image, 0, 0);
-
-                    g.SmoothingMode = SmoothingMode.HighQuality;
-                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    g.CompositingQuality = CompositingQuality.HighQuality;
-                    g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-
-                    var stringFormat = new StringFormat
-                    {
-                        Alignment = StringAlignment.Near,
-                        LineAlignment = StringAlignment.Near
-                    };
-
-                    var labelY = 0;
-
-                    switch (_labelPosition)
-                    {
-                        case LabelPosition.BottomCenter:
-                            labelY = image.Height - (_labelFont.Height);
-                            stringFormat.Alignment = StringAlignment.Center;
-                            break;
-                        case LabelPosition.BottomLeft:
-                            labelY = image.Height - (_labelFont.Height);
-                            stringFormat.Alignment = StringAlignment.Near;
-                            break;
-                        case LabelPosition.BottomRight:
-                            labelY = image.Height - (_labelFont.Height);
-                            stringFormat.Alignment = StringAlignment.Far;
-                            break;
-                        case LabelPosition.TopCenter:
-                            labelY = 0;
-                            stringFormat.Alignment = StringAlignment.Center;
-                            break;
-                        case LabelPosition.TopLeft:
-                            labelY = 0;
-                            stringFormat.Alignment = StringAlignment.Near;
-                            break;
-                        case LabelPosition.TopRight:
-                            labelY = 0;
-                            stringFormat.Alignment = StringAlignment.Far;
-                            break;
-                    }
-
-                    //color a background color box at the bottom of the barcode to hold the string of data
-                    g.FillRectangle(new SolidBrush(_backgroundColor),
-                        new RectangleF(0, labelY, image.Width, _labelFont.Height));
-
-                    //draw datastring under the barcode image
-                    g.DrawString(_data, _labelFont, new SolidBrush(_foregroundColor),
-                        new RectangleF(0, labelY, image.Width, _labelFont.Height), stringFormat);
-
-                    g.Save();
+                    case LabelPosition.TopCenter:
+                    case LabelPosition.BottomCenter:
+                        labelY = image.Height - ((int)labelSize.Height);
+                        labelX = _width / 2;
+                        textOptions.HorizontalAlignment = HorizontalAlignment.Center;
+                        break;
+                    case LabelPosition.TopLeft:
+                    case LabelPosition.BottomLeft:
+                        labelY = image.Height - ((int)labelSize.Height);
+                        labelX = 0;
+                        textOptions.HorizontalAlignment = HorizontalAlignment.Left;
+                        break;
+                    case LabelPosition.TopRight:
+                    case LabelPosition.BottomRight:
+                        labelY = image.Height - ((int)labelSize.Height);
+                        labelX = _width - (int) labelSize.Width;
+                        textOptions.HorizontalAlignment = HorizontalAlignment.Left;
+                        break;
                 }
-                return image;
+
+                textOptions.Origin = new Point(labelX, labelY);
+
+                image.Mutate(x=> x.DrawText(textOptions, _data, _foregroundColor));
             }
-            catch (Exception ex)
-            {
-                throw new Exception("ELABEL_GENERIC-1: " + ex.Message);
-            }
+
+            return image;
         }
     }
 }
