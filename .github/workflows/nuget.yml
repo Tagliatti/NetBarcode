@@ -15,11 +15,14 @@ jobs:
           dotnet-version: 3.1.200
       - name: Build
         run: dotnet build -c Release
+        working-directory: ./NetBarcode
       - name: Pack nuget package
         run: dotnet pack /p:PackageVersion=${GITHUB_REF:10} --configuration Release
+        working-directory: ./NetBarcode
       - name: Push package to nuget
         run: dotnet nuget push **/*.nupkg 
             --skip-duplicate 
             --no-symbols true
             --api-key ${{ secrets.NUGET_DEPLOY_KEY }}
             --source https://api.nuget.org/v3/index.json
+        working-directory: ./NetBarcode
