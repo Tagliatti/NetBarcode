@@ -75,10 +75,8 @@ namespace NetBarcode
         private readonly bool _autoSize = true;
         private readonly bool _showLabel = false;
 
-        private readonly Font _labelFont =
-            SystemFonts.CreateFont(SystemFonts.Collection.Families.First().Name, 10, FontStyle.Bold);
+        private Font _labelFont;
 
-        private readonly FontCollection _fontCollection = new FontCollection();
         private readonly LabelPosition _labelPosition = LabelPosition.BottomCenter;
         private readonly AlignmentPosition _alignmentPosition = AlignmentPosition.Center;
 
@@ -610,17 +608,19 @@ namespace NetBarcode
                 _height = _width / aspectRatio;
             }
 
-            var topLabelAdjustment = 0F;
-            
-            var textOptions = new TextOptions(_labelFont)
-            {
-                Dpi = 200,
-            };
-            var labelSize = TextMeasurer.Measure(_data, textOptions);
+            float labelHeight = 0F, labelWidth = 0F;
+            TextOptions labelTextOptions = null;
 
             if (_showLabel)
             {
-                topLabelAdjustment = labelSize.Height;
+                labelTextOptions = new TextOptions(GetEffeciveFont())
+                {
+                    Dpi = 200,
+                };
+
+                var labelSize = TextMeasurer.Measure(_data, labelTextOptions);
+                labelHeight = labelSize.Height;
+                labelWidth = labelSize.Width;
             }
 
             var iBarWidth = _width / _encodedData.Length;
@@ -674,7 +674,7 @@ namespace NetBarcode
                     {
                         imageContext.DrawLines(drawingOptions, pen,
                             new PointF(pos * iBarWidth + shiftAdjustment + halfBarWidth, 0),
-                            new PointF(pos * iBarWidth + shiftAdjustment + halfBarWidth, _height - topLabelAdjustment)
+                            new PointF(pos * iBarWidth + shiftAdjustment + halfBarWidth, _height - labelHeight)
                         );
                     }
 
@@ -691,30 +691,46 @@ namespace NetBarcode
                 {
                     case LabelPosition.TopCenter:
                     case LabelPosition.BottomCenter:
-                        labelY = image.Height - ((int)labelSize.Height);
+                        labelY = image.Height - ((int)labelHeight);
                         labelX = _width / 2;
-                        textOptions.HorizontalAlignment = HorizontalAlignment.Center;
+                        labelTextOptions.HorizontalAlignment = HorizontalAlignment.Center;
                         break;
                     case LabelPosition.TopLeft:
                     case LabelPosition.BottomLeft:
-                        labelY = image.Height - ((int)labelSize.Height);
+                        labelY = image.Height - ((int)labelHeight);
                         labelX = 0;
-                        textOptions.HorizontalAlignment = HorizontalAlignment.Left;
+                        labelTextOptions.HorizontalAlignment = HorizontalAlignment.Left;
                         break;
                     case LabelPosition.TopRight:
                     case LabelPosition.BottomRight:
-                        labelY = image.Height - ((int)labelSize.Height);
-                        labelX = _width - (int) labelSize.Width;
-                        textOptions.HorizontalAlignment = HorizontalAlignment.Left;
+                        labelY = image.Height - ((int)labelHeight);
+                        labelX = _width - (int)labelWidth;
+                        labelTextOptions.HorizontalAlignment = HorizontalAlignment.Left;
                         break;
                 }
 
-                textOptions.Origin = new Point(labelX, labelY);
+                labelTextOptions.Origin = new Point(labelX, labelY);
 
-                image.Mutate(x=> x.DrawText(textOptions, _data, _foregroundColor));
+                image.Mutate(x=> x.DrawText(labelTextOptions, _data, _foregroundColor));
             }
 
             return image;
+        }
+
+        private Font GetEffeciveFont()
+        {
+            if (!_showLabel)
+                return null;
+
+            if (_labelFont != null)
+                return _labelFont;
+
+            var defaultFont = SystemFonts.Collection.Families.FirstOrDefault();
+
+            if (defaultFont == null)
+                throw new Exception("Label font not specified and no installed fonts found.");
+
+            return _labelFont = SystemFonts.CreateFont(defaultFont.Name, 10, FontStyle.Bold);
         }
     }
 }

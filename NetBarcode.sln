@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.0.0
-MinimumVisualStudioVersion = 10.0.0.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetBarcode", "NetBarcode\NetBarcode.csproj", "{B087E675-F31D-4324-92A3-FA26681D8F81}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32516.85
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetBarcode", "NetBarcode\NetBarcode.csproj", "{B087E675-F31D-4324-92A3-FA26681D8F81}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetBarcode.Tests", "NetBarcode.Tests\NetBarcode.Tests.csproj", "{378A939B-D451-494F-BBF7-09A3B484F3E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{B087E675-F31D-4324-92A3-FA26681D8F81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B087E675-F31D-4324-92A3-FA26681D8F81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B087E675-F31D-4324-92A3-FA26681D8F81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{378A939B-D451-494F-BBF7-09A3B484F3E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{378A939B-D451-494F-BBF7-09A3B484F3E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{378A939B-D451-494F-BBF7-09A3B484F3E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{378A939B-D451-494F-BBF7-09A3B484F3E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {66A66587-F318-4CBC-881F-3F828E21C3C3}
 	EndGlobalSection
 EndGlobal
