@@ -1,10 +1,9 @@
-﻿using NetBarcode.Types;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using NetBarcode.Types;
 using SixLabors.Fonts;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats;
@@ -16,6 +15,8 @@ using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Formats.Tga;
 using SixLabors.ImageSharp.Formats.Tiff;
 using SixLabors.ImageSharp.Formats.Webp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace NetBarcode
 {
@@ -497,6 +498,17 @@ namespace NetBarcode
         }
 
         /// <summary>
+        /// Saves the image to a file async.
+        /// </summary>
+        /// <param name="path">The file path for the image.</param>
+        /// <param name="imageFormat">The image format. Defaults to Jpeg.</param>
+        public async Task SaveImageFileAsync(string path, ImageFormat imageFormat = ImageFormat.Jpeg)
+        {
+            using (var image = GenerateImage())
+                await image.SaveAsync(path, getImageEncoder(imageFormat));
+        }
+
+        /// <summary>
         /// Gets the image in PNG format as a Base64 encoded string.
         /// </summary>
         public string GetBase64Image()
@@ -686,7 +698,7 @@ namespace NetBarcode
             {
                 var labelY = 0;
                 var labelX = 0;
-                
+
                 switch (_labelPosition)
                 {
                     case LabelPosition.TopCenter:
@@ -711,7 +723,7 @@ namespace NetBarcode
 
                 labelTextOptions.Origin = new Point(labelX, labelY);
 
-                image.Mutate(x=> x.DrawText(labelTextOptions, _data, _foregroundColor));
+                image.Mutate(x => x.DrawText(labelTextOptions, _data, _foregroundColor));
             }
 
             return image;
