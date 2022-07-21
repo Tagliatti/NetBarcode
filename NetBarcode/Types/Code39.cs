@@ -66,7 +66,7 @@ namespace NetBarcode.Types
             }
 
             var encodedData = "";
-            
+
             foreach (char c in formattedData)
             {
                 try
@@ -80,16 +80,16 @@ namespace NetBarcode.Types
                     {
                         throw new Exception("EC39-1: Invalid data.");
                     }
-                    
+
                     throw new Exception("EC39-1: Invalid data. (Try using Extended Code39)");
                 }
             }
 
-            encodedData = encodedData.Substring(0, encodedData.Length-1);
+            encodedData = encodedData.Substring(0, encodedData.Length - 1);
 
             return encodedData;
         }
-        
+
         private void Initialize()
         {
             _codes.Clear();
@@ -138,7 +138,7 @@ namespace NetBarcode.Types
             _codes.Add('%', "101001001001");
             _codes.Add('*', "100101101101");
         }
-        
+
         private void InitializeExtended()
         {
             _codesExtended.Clear();
@@ -232,20 +232,20 @@ namespace NetBarcode.Types
             _codesExtended.Add("z", "+Z");
             _codesExtended.Add(Convert.ToChar(127).ToString(), "%T"); //also %X, %Y, %Z 
         }
-        
+
         private void InsertExtendedCharsIfNeeded(ref string formattedData)
         {
             var output = "";
-            
+
             foreach (char c in formattedData)
             {
-                try
+                if (_codes.ContainsKey(c))
                 {
                     string s = _codes[c].ToString();
                     output += c;
                 }
-                catch 
-                { 
+                else
+                {
                     //insert extended substitution
                     object oTrans = _codesExtended[c.ToString()];
                     output += oTrans.ToString();
@@ -254,8 +254,8 @@ namespace NetBarcode.Types
 
             formattedData = output;
         }
-        
-        private char GetChecksumChar(string strNoAstr) 
+
+        private char GetChecksumChar(string strNoAstr)
         {
             //checksum
             const string charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%";

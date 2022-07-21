@@ -1,10 +1,15 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
+using Xunit.Abstractions;
 
 namespace NetBarcode.Tests
 {
     public class BarcodeTests
     {
+        private readonly ITestOutputHelper _output;
+        public BarcodeTests(ITestOutputHelper output)
+            => _output = output;
+
         [Fact]
         public void GetImage()
         {
@@ -28,6 +33,20 @@ namespace NetBarcode.Tests
 
             var base64 = image.ToBase64String(PngFormat.Instance);
             var expected = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAABaCAYAAAARg3zAAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAEPElEQVR4nO3bO0gjWxyA8b8QFZ8Iaida2Kj4ABtFFHIrG0sRRBHUXra0kRUE34X4bLQSra28haAXBLm1rSAWNqIgiPiG7D2zZozJZHKSm8fy5/tByGTm7JlD8rGYTBIQkeDn7Z/wfSgUOsnLy/sr8rF8irc/WuQ4v/HR8yWa3298Jteb7DqzOW+i5ynevdf5cvU82KzbZr3hoH9+zhe+l6j9YrHfb9xPy3E28/uNz+R6/c6b63ltz2vzOgclN8+D3zjr9QYEUISgoQpBQxWChioEDVUIGqoQNFQhaKhC0FCFoKEKQUMVgoYqBA1VCBqqEDRUIWioQtBQhaChCkFDFYKGKgQNVQgaqhA0VCFoqELQUIWgoQpBQxWChioEDVUIGqoQNFQhaKhC0FCFoKEKQUMVgoYqBA1VCBqqEDRUIWioQtBQhaChCkFDFYKGKgQNVQgaqhA0VCFoqELQUIWgoQpBQxWChioEDVUIGqqYoP/977YSdS8ejyXBfvEZ5zfe9rw24zO53mTXmc15bc9r8zrn6nmwWXfC9QZCodDfnwd+RN577Be//dHizZtoXKL5LcZnZL3JrjMH89qe1/d1ztXzYLvuROfnTw6oQtBQhaChCkFDFYKOMjc3J29vb872+Pi41NTUuMdOT0/l+PjY2a6vr5fh4eGk59/d3ZXLy0tne2BgQBobG+Xi4kL29/edfbW1tTI6OipIDUFHmZ2dlcfHR2e7t7c3Jujp6Wn3WKpBHx0dOdvNzc1u0OF5e3p6CPp/IGioQtBQhaChCkFDFYKGKgQNVQg6DTY3N52P3W5vb2OOVVVVydTUlExMTCQ979ramszMzHjOW15eLiMjI84YfCFoHyaYkpIS9/HNzY3nuMXFRc/ojLu7O5mfn08p6IWFhbjzPjw8yPr6uhN8RUWF4DeC9mEueNh4enpyt80Vv6KiInl/f3euBBrPz88pnT9y3v7+fiktLXXPEb6aacYQ9BeCTrO+vj4pKyuTl5eXtM67vLwsdXV1zvbBwYEbNL4jaB8bGxvS1NTkPt7b25Pt7W3Bn4ugfbS3t0tnZ6f7+OzsLOG/MW8QCwsL5ePjQ5B9BJ1mk5OTMfsKCgoE2UHQaTY0NCT5+fnf9o2NjQmyg6DTbGtry3lTiNwg6Ax5fX2VhoYGZ9sEfn5+Lsg8gs6QUCgkV1dXzjafE2cPQaeZeVNo3gSm+1OO7u5uCQR+v1zmKiG8EXQamO9rhC9Rm4/tvI6norq6Wu7v753t6+vrmOMmcP73/46go5jf9IUvVZsvAEUyP2ANBoPOdmtrq7vfXGxZWVmJ++WkyO9xtLW1OZfFDROsUVlZ6c7b0tLijt3Z2ZHV1dW4X04aHByU4uJiwReCjnJ4eBj3mPlRrNcPY7u6upybjaWlpZh9HR0dcnJyErPf/JlhbrBH0FCFoKEKQUMVgoYqBA1VfgF9iClNy+z/ywAAAABJRU5ErkJggg==";
+            Assert.Equal(expected, base64);
+        }
+
+        [Fact]
+        public void Code39()
+        {
+            var barcode = new Barcode("HELLO", Type.Code39);
+            var image = barcode.GetImage();
+
+            Assert.NotNull(image);
+
+            var base64 = image.ToBase64String(PngFormat.Instance);
+            // _output.WriteLine(base64);
+            var expected = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAABaCAYAAAARg3zAAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABYElEQVR4nO3SQWrDMBQAURlysPZkPVp6M3eTgGkxRK6gdHgPsvBH8KUwtzHG2+P3ue/7fTxs2/Z+nB+/Z+dXz53dZ/We2ff/t/fN7lmx/9X/8ZVzM/Nn0B/jp+/z4/fs/Oq5s/us3jP7/lV7z/b99Z4V+39zr8v3vA0IETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNyhe/wtr4MLilZAAAAABJRU5ErkJggg==";
             Assert.Equal(expected, base64);
         }
     }
