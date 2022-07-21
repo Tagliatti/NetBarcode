@@ -240,10 +240,7 @@ namespace NetBarcode.Types
             foreach (char c in formattedData)
             {
                 if (_codes.ContainsKey(c))
-                {
-                    string s = _codes[c].ToString();
                     output += c;
-                }
                 else
                 {
                     //insert extended substitution
