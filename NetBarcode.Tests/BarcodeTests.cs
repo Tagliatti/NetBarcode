@@ -49,5 +49,19 @@ namespace NetBarcode.Tests
             var expected = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAABaCAYAAAARg3zAAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABYElEQVR4nO3SQWrDMBQAURlysPZkPVp6M3eTgGkxRK6gdHgPsvBH8KUwtzHG2+P3ue/7fTxs2/Z+nB+/Z+dXz53dZ/We2ff/t/fN7lmx/9X/8ZVzM/Nn0B/jp+/z4/fs/Oq5s/us3jP7/lV7z/b99Z4V+39zr8v3vA0IETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNyhe/wtr4MLilZAAAAABJRU5ErkJggg==";
             Assert.Equal(expected, base64);
         }
+
+        [Fact]
+        public void Code39E()
+        {
+            var barcode = new Barcode("HELLO!", Type.Code39E);
+            var image = barcode.GetImage();
+
+            Assert.NotNull(image);
+
+            var base64 = image.ToBase64String(PngFormat.Instance);
+            _output.WriteLine(base64);
+            var expected = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOgAAAB0CAYAAACPDX5AAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAB00lEQVR4nO3TQWrDMBQAURlysPZkPVp7M3eTgmkwRLGgU3gPsrCw8iXD3MYYb/ff177vn+Nu27b34/rxeXb91ffOzrN6zuz9/9v9ZuesmP/sdzx77+r+ld9p9b1n1n8C/RiPfq8fn2fXX33v7Dyr58zef9Xcs3l/PWfF/CvnWrH/2XOu/r8r+x/WbwPIEiiECRTCBAphAoUwgUKYQCFMoBAmUAgTKIQJFMIECmEChTCBQphAIUygECZQCBMohAkUwgQKYQKFMIFCmEAhTKAQJlAIEyiECRTCBAphAoUwgUKYQCFMoBAmUAgTKIQJFMIECmEChTCBQphAIUygECZQCBMohAkUwgQKYQKFMIFCmEAhTKAQJlAIEyiECRTCBAphAoUwgUKYQCFMoBAmUAgTKIQJFMIECmEChTCBQphAIUygECZQCBMohAkUwgQKYQKFMIFCmEAhTKAQJlAIEyiECRTCBAphAoUwgUKYQCFMoBAmUAgTKIQJFMIECmEChTCBQphAIUygECZQCBMohAkUwgQKYQKFMIFCmEAhTKAQJlAIEyiECRTCBAphAoUwgUKYQCFMoBAmUAgTKIQJFMIECmEChTCBQphAIUygECZQCBMohH0DvzgX405Hw8QAAAAASUVORK5CYII=";
+            Assert.Equal(expected, base64);
+        }
     }
 }
