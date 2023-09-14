@@ -670,7 +670,6 @@ namespace NetBarcode
                 imageContext.BackgroundColor(_backgroundColor);
 
                 //lines are fBarWidth wide so draw the appropriate color line vertically
-                var pen = new Pen(_foregroundColor, iBarWidth / iBarWidthModifier);
                 var drawingOptions = new DrawingOptions
                 {
                     GraphicsOptions = new GraphicsOptions
@@ -680,6 +679,7 @@ namespace NetBarcode
                     }
                 };
 
+                var pen = new SixLabors.ImageSharp.Drawing.Processing.Pen(_foregroundColor, iBarWidth / iBarWidthModifier);
                 while (pos < _encodedData.Length)
                 {
                     if (_encodedData[pos] == '1')
