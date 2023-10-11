@@ -10,14 +10,14 @@
     <Authors>Filipe Tagliatti</Authors>
     <Company />
     <Product />
-    <Description>Barcode generation library written in .NET Core compatible with .NET Standard 2.</Description>
+    <Description>Barcode generation library written in .NET Core compatible with .NET 6.</Description>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
     <DocumentationFile>bin\$(Configuration)\netstandard2.0\NetBarcode.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta17" />
+    <PackageReference Include="SixLabors.Fonts" Version="1.0.1" />
     <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0" />
   </ItemGroup>
 </Project>
