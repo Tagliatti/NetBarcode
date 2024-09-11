@@ -630,7 +630,7 @@ namespace NetBarcode
                     Dpi = 200,
                 };
 
-                var labelSize = TextMeasurer.Measure(_data, labelTextOptions);
+                var labelSize = TextMeasurer.MeasureSize(_data, labelTextOptions);
                 labelHeight = labelSize.Height;
                 labelWidth = labelSize.Width;
             }
@@ -670,7 +670,7 @@ namespace NetBarcode
                 imageContext.BackgroundColor(_backgroundColor);
 
                 //lines are fBarWidth wide so draw the appropriate color line vertically
-                var pen = new Pen(_foregroundColor, iBarWidth / iBarWidthModifier);
+                var pen = new SolidPen(_foregroundColor, iBarWidth / iBarWidthModifier);
                 var drawingOptions = new DrawingOptions
                 {
                     GraphicsOptions = new GraphicsOptions
@@ -684,10 +684,10 @@ namespace NetBarcode
                 {
                     if (_encodedData[pos] == '1')
                     {
-                        imageContext.DrawLines(drawingOptions, pen,
+                        imageContext.DrawPolygon(drawingOptions, pen, new PointF[] {
                             new PointF(pos * iBarWidth + shiftAdjustment + halfBarWidth, 0),
                             new PointF(pos * iBarWidth + shiftAdjustment + halfBarWidth, _height - labelHeight)
-                        );
+                        });
                     }
 
                     pos++;
@@ -723,7 +723,7 @@ namespace NetBarcode
 
                 labelTextOptions.Origin = new Point(labelX, labelY);
 
-                image.Mutate(x => x.DrawText(labelTextOptions, _data, _foregroundColor));
+                image.Mutate(x => x.DrawText(_data, labelTextOptions.Font, _foregroundColor, labelTextOptions.Origin));
             }
 
             return image;

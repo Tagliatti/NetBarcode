@@ -16,8 +16,8 @@
     <DocumentationFile>bin\$(Configuration)\netstandard2.0\NetBarcode.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta17" />
+    <PackageReference Include="SixLabors.Fonts" Version="1.0.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0" />
   </ItemGroup>
 </Project>
