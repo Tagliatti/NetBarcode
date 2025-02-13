@@ -739,7 +739,7 @@ namespace NetBarcode
 
             var defaultFont = SystemFonts.Collection.Families.FirstOrDefault();
 
-            if (defaultFont == null)
+            if (defaultFont == null || defaultFont.Name == null)
                 throw new Exception("Label font not specified and no installed fonts found.");
 
             return _labelFont = SystemFonts.CreateFont(defaultFont.Name, 10, FontStyle.Bold);
