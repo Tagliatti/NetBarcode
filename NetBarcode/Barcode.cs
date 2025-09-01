@@ -675,7 +675,7 @@ namespace NetBarcode
                 {
                     GraphicsOptions = new GraphicsOptions
                     {
-                        Antialias = true,
+                        Antialias = false, // makes the image a bit sharper
                         AlphaCompositionMode = PixelAlphaCompositionMode.Src,
                     }
                 };
