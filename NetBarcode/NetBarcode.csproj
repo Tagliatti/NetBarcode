@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageProjectUrl>https://github.com/Tagliatti/NetBarcode</PackageProjectUrl>
@@ -16,8 +16,8 @@
     <DocumentationFile>bin\$(Configuration)\netstandard2.0\NetBarcode.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SixLabors.Fonts" Version="1.0.1" />
+    <PackageReference Include="SixLabors.Fonts" Version="2.0.7" />
     <PackageReference Include="SixLabors.ImageSharp" Version="2.1.11" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.0.5" />
   </ItemGroup>
 </Project>
