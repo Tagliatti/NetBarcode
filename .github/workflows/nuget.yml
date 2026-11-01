@@ -4,25 +4,30 @@ on:
   push:
     tags:
       - '*'
+
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 3.1.200
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore ./NetBarcode/NetBarcode.csproj
+
       - name: Build
-        run: dotnet build -c Release
-        working-directory: ./NetBarcode
+        run: dotnet build ./NetBarcode/NetBarcode.csproj -c Release --no-restore
+
       - name: Pack nuget package
-        run: dotnet pack /p:PackageVersion=${GITHUB_REF:10} --configuration Release
-        working-directory: ./NetBarcode
+        run: dotnet pack ./NetBarcode/NetBarcode.csproj -c Release --no-build -o ./artifacts /p:PackageVersion=${GITHUB_REF_NAME}
+
       - name: Push package to nuget
-        run: dotnet nuget push **/*.nupkg 
-            --skip-duplicate 
-            --no-symbols true
-            --api-key ${{ secrets.NUGET_DEPLOY_KEY }}
-            --source https://api.nuget.org/v3/index.json
-        working-directory: ./NetBarcode
+        run: dotnet nuget push ./artifacts/*.nupkg --skip-duplicate --no-symbols true --api-key "${{ secrets.NUGET_DEPLOY_KEY }}" --source https://api.nuget.org/v3/index.json
